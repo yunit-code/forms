@@ -1,0 +1,107 @@
+.forms-common-container{
+    display: table;
+    // max-width: 600px;
+    width: 100%;
+  }
+  .forms-message-container{
+      .fic-label-box,.fic-select-box,.fic-input-box{
+        padding-top: 4px;
+        padding-bottom: 5px;
+      }
+      .fic-desc-info{
+        p{
+          margin-bottom: 0 !important;
+        }
+      }
+      &.retain-bottom-height{
+        min-height: 30px;
+      }
+  }
+  .forms-select-container,.forms-input-container,.forms-message-container{
+    width: 100%;
+    &.layout-horizontal{
+      display: table;
+      // align-items: center;
+      .fic-label-box{
+        display: table-cell;
+        padding-right: 16px;
+        text-align: right;
+        width: 88px;
+        padding-right: 16px;
+        padding-top: 0;
+        vertical-align: middle;
+      }
+      .fic-message-box{
+        display: table-cell;
+        vertical-align: middle;
+        padding-left: 16px;
+        p{
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+    &.layout-vertical{
+      .fic-label-box{
+        width: 100%;
+        display: block;
+        text-align: left;
+        padding-top: 0;
+        padding-bottom: 4px;
+      }
+      .fic-select-box,.fic-input-box{
+        width: 100%;
+      }
+    }
+    .required,.fic-error-message-info{
+      color: red;
+    }
+  }
+//公共的popover
+.fic_common_popover{
+  .fic_common_popover_content{
+    width: 300px;
+    display: flex;
+    flex-wrap:wrap;
+    position: relative;
+    .fic_tipinfo{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      z-index: 99;
+    }
+  }
+  .ant-popover-inner-content{
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .fic-icon-item-wrapper{
+    position: relative;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    .fic-icon-item-node{
+      text-align: center;
+      >i{
+        font-size: 26px;
+      }
+    }
+    .check_layer{
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 2px solid #1890ff;
+        color: #1890ff;
+        .check_icon{
+            position: absolute;
+            right: 1px;
+            bottom: 0px;
+            font-size: 12px;
+        }
+    }
+  }
+}
