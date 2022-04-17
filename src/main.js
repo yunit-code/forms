@@ -30,7 +30,7 @@ requireComponent.keys().forEach(fileName => {
         .replace(/\.\w+$/, '')
     )
   )
-  console.log("🚀 ~ file: main.js ~ line 33 ~ requireComponent.keys ~ componentName", componentName)
+  // console.log("🚀 ~ file: main.js ~ line 33 ~ requireComponent.keys ~ componentName", componentName)
   // 全局注册组件
   Vue.component(
     componentName+"@"+config.className+"-" +config.version,

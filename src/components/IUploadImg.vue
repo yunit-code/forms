@@ -917,7 +917,7 @@ export default {
       }
       else if (this.propData.customFun && this.propData.customFunCode) {
         try {
-          var fun = eval(this.propData.customFunCode);
+          var fun = IDM.express.eval(this.propData.customFunCode);
           if (!fun(thisInputVal)) {
             result.success = false;
             result.message =

@@ -108,7 +108,9 @@
       </div>
       <div
         class="forms-message-container"
-        :class="`layout-${propData.labelLayout || 'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`"
+        :class="`layout-${propData.labelLayout || 'horizontal'}${
+          !propData.retainBottomHeight ? '' : ' retain-bottom-height'
+        }`"
       >
         <div
           class="fic-label-box"
@@ -149,7 +151,7 @@ export default {
       moduleObject: {},
       propData: this.$root.propData.compositeAttr || {},
       //回显的值，并且有值的时候也只是为了阻止表单联动的时候覆盖thisValue，有回显值第一次不覆盖thisValue，后面继续覆盖
-      echoValue:null
+      echoValue: null,
     };
   },
   props: {},
@@ -669,44 +671,63 @@ export default {
     /**
      * 结果值绑定
      */
-    valueBind(byValData){
+    valueBind(byValData) {
       let that = this;
-      if(this.echoValue!=null){
-        this.echoValue=null;
+      if (this.echoValue != null) {
+        this.echoValue = null;
         return;
       }
       switch (this.propData.resType) {
         case "interfaceParam":
-            let urlObject = window.IDM.url.queryObject(),
-            pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
-            let paramObject = {
-              urlData:JSON.stringify(urlObject),
-              pageId
-            }
-            paramObject[this.propData.resInterfaceParam] = JSON.stringify(byValData);
-            this.propData.resInterfaceUrl&&window.IDM.http.get(this.propData.resInterfaceUrl, paramObject).then((res) => {
-              if (res.data.code == 200) {
-                that.thisValue = res.data.data;
-              } else {
-                that.thisValue = '';
-              }
-            })
+          let urlObject = window.IDM.url.queryObject(),
+            pageId =
+              window.IDM.broadcast && window.IDM.broadcast.pageModule
+                ? window.IDM.broadcast.pageModule.id
+                : "";
+          let paramObject = {
+            urlData: JSON.stringify(urlObject),
+            pageId,
+          };
+          paramObject[this.propData.resInterfaceParam] =
+            JSON.stringify(byValData);
+          this.propData.resInterfaceUrl &&
+            window.IDM.http
+              .get(this.propData.resInterfaceUrl, paramObject)
+              .then((res) => {
+                if (res.data.code == 200) {
+                  that.thisValue = res.data.data;
+                } else {
+                  that.thisValue = "";
+                }
+              });
           break;
         case "resultVal":
           let newValue = byValData;
-          if(this.propData.resResultValField){
+          if (this.propData.resResultValField) {
             //填写了
-            newValue = window.IDM.express.replace.call(this, "@["+this.propData.resResultValField+"]", byValData);
+            newValue = window.IDM.express.replace.call(
+              this,
+              "@[" + this.propData.resResultValField + "]",
+              byValData
+            );
           }
           this.thisValue = newValue;
           break;
         case "customFun":
-          if(this.propData.resFunction&&this.propData.resFunction.length>0){
-            var resValue = '';
+          if (
+            this.propData.resFunction &&
+            this.propData.resFunction.length > 0
+          ) {
+            var resValue = "";
             try {
-              resValue = window[this.propData.resFunction[0].name]&&window[this.propData.resFunction[0].name].call(this,{...this.propData.resFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
-            } catch (error) {
-            }
+              resValue =
+                window[this.propData.resFunction[0].name] &&
+                window[this.propData.resFunction[0].name].call(this, {
+                  ...this.propData.resFunction[0].param,
+                  moduleObject: this.moduleObject,
+                  byVal: byValData,
+                });
+            } catch (error) {}
             this.thisValue = resValue;
           }
           break;
@@ -715,59 +736,79 @@ export default {
     /**
      * 重置组件的默认值
      */
-    resetDefaultValue(object){
+    resetDefaultValue(object) {
       this.thisValue = this.propData.defaultValue || "";
     },
     /**
      * 内容变更事件
      */
-    change(value){
-      let selectObject=value;
-      if(this.propData.linkageDemandPageModule&&this.propData.linkageDemandPageModule.length>0){
+    change(value) {
+      let selectObject = value;
+      if (
+        this.propData.linkageDemandPageModule &&
+        this.propData.linkageDemandPageModule.length > 0
+      ) {
         let moduleIdArray = [];
-        this.propData.linkageDemandPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
+        this.propData.linkageDemandPageModule.forEach((item) => {
+          moduleIdArray.push(item.moduleId);
+        });
         this.sendBroadcastMessage({
-          type:"linkageDemand",
-          message:selectObject,
-          rangeModule:moduleIdArray,
-          messageKey:this.propData.formFiledKey||this.propData.ctrlId
-        })
+          type: "linkageDemand",
+          message: selectObject,
+          rangeModule: moduleIdArray,
+          messageKey: this.propData.formFiledKey || this.propData.ctrlId,
+        });
       }
-      if(this.propData.linkageResultPageModule&&this.propData.linkageResultPageModule.length>0){
+      if (
+        this.propData.linkageResultPageModule &&
+        this.propData.linkageResultPageModule.length > 0
+      ) {
         let moduleIdArray = [];
-        this.propData.linkageResultPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
+        this.propData.linkageResultPageModule.forEach((item) => {
+          moduleIdArray.push(item.moduleId);
+        });
         this.sendBroadcastMessage({
-          type:"linkageResult",
-          message:selectObject,
-          rangeModule:moduleIdArray,
-          messageKey:this.propData.formFiledKey||this.propData.ctrlId
-        })
+          type: "linkageResult",
+          message: selectObject,
+          rangeModule: moduleIdArray,
+          messageKey: this.propData.formFiledKey || this.propData.ctrlId,
+        });
       }
     },
     /**
      * 失去焦点事件
      */
-    blurChange(){
-      let selectObject=this.thisValue;
-      if(this.propData.blurLinkageDemandPageModule&&this.propData.blurLinkageDemandPageModule.length>0){
+    blurChange() {
+      let selectObject = this.thisValue;
+      if (
+        this.propData.blurLinkageDemandPageModule &&
+        this.propData.blurLinkageDemandPageModule.length > 0
+      ) {
         let moduleIdArray = [];
-        this.propData.blurLinkageDemandPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
+        this.propData.blurLinkageDemandPageModule.forEach((item) => {
+          moduleIdArray.push(item.moduleId);
+        });
         this.sendBroadcastMessage({
-          type:"linkageDemand",
-          message:selectObject,
-          rangeModule:moduleIdArray,
-          messageKey:this.propData.formFiledKey||this.propData.ctrlId
-        })
+          type: "linkageDemand",
+          message: selectObject,
+          rangeModule: moduleIdArray,
+          messageKey: this.propData.formFiledKey || this.propData.ctrlId,
+        });
       }
-      if(this.propData.blurLinkageResultPageModule&&this.propData.blurLinkageResultPageModule.length>0){
+      if (
+        this.propData.blurLinkageResultPageModule &&
+        this.propData.blurLinkageResultPageModule.length > 0
+      ) {
         let moduleIdArray = [];
-        this.propData.blurLinkageResultPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
+        this.propData.blurLinkageResultPageModule.forEach((item) => {
+          moduleIdArray.push(item.moduleId);
+        });
         this.sendBroadcastMessage({
-          type:"linkageResult",
-          message:selectObject,
-          rangeModule:moduleIdArray,
-          messageKey:this.propData.formFiledKey||this.propData.ctrlId
-        })
+          type: "linkageResult",
+          message: selectObject,
+          rangeModule: moduleIdArray,
+          messageKey: this.propData.formFiledKey || this.propData.ctrlId,
+        });
       }
     },
     /**
@@ -781,12 +822,12 @@ export default {
      * } object
      */
     receiveBroadcastMessage(object) {
-      console.log("组件收到消息:"+this.moduleObject.packageid, object);
-      if(object.type&&object.type=="linkageResult"){
+      console.log("组件收到消息:" + this.moduleObject.packageid, object);
+      if (object.type && object.type == "linkageResult") {
         //结果值设置
-        object.triggerType!="OT"&&this.valueBind(object.message)
-      }else if(object.type&&object.type=="linkageResetDefaultValue"){
-        this.resetDefaultValue(object.message)
+        object.triggerType != "OT" && this.valueBind(object.message);
+      } else if (object.type && object.type == "linkageResetDefaultValue") {
+        this.resetDefaultValue(object.message);
       }
     },
     /**
@@ -812,59 +853,91 @@ export default {
      * }
      */
     setContextValue(object) {
-      console.log("统一接口设置的值",object)
-      if(object.type!="pageCommonInterface"){
+      console.log("统一接口设置的值", object);
+      if (object.type != "pageCommonInterface") {
         return;
       }
       //先取出回显的值
-      if(object.key==this.propData.echoDataName){
-        var filedExp,_thisValue;
+      if (object.key == this.propData.echoDataName) {
+        var filedExp, _thisValue;
         switch (this.propData.echoType) {
-          case "customFiled"://自定义字段
+          case "customFiled": //自定义字段
             filedExp = this.propData.echoDataFiled;
             break;
-          case "customFunction"://自定义函数
-            if(this.propData.echoFunction&&this.propData.echoFunction.length>0){
+          case "customFunction": //自定义函数
+            if (
+              this.propData.echoFunction &&
+              this.propData.echoFunction.length > 0
+            ) {
               try {
-                let param = {...this.propData.echoFunction[0].param,moduleObject:this.moduleObject,optionList:this.optionList};
+                let param = {
+                  ...this.propData.echoFunction[0].param,
+                  moduleObject: this.moduleObject,
+                  optionList: this.optionList,
+                };
                 param[this.propData.echoDataName] = object.data;
-                _thisValue = window[this.propData.echoFunction[0].name]&&window[this.propData.echoFunction[0].name].call(this,param);
-              } catch (error) {
-              }
+                _thisValue =
+                  window[this.propData.echoFunction[0].name] &&
+                  window[this.propData.echoFunction[0].name].call(this, param);
+              } catch (error) {}
             }
             break;
-          default://同表单标识
-            filedExp = this.propData.formFiledKey||this.propData.ctrlId;
+          default:
+            //同表单标识
+            filedExp = this.propData.formFiledKey || this.propData.ctrlId;
             break;
         }
 
-        var dataObject = {IDM:window.IDM};
+        var dataObject = { IDM: window.IDM };
         dataObject[this.propData.echoDataName] = object.data;
 
-        if(filedExp){
-          filedExp = this.propData.echoDataName+(filedExp.startsWiths("[")?"":".")+filedExp;
-          _thisValue = window.IDM.express.replace.call(this, "@["+filedExp+"]", dataObject);
+        if (filedExp) {
+          filedExp =
+            this.propData.echoDataName +
+            (filedExp.startsWiths("[") ? "" : ".") +
+            filedExp;
+          _thisValue = window.IDM.express.replace.call(
+            this,
+            "@[" + filedExp + "]",
+            dataObject
+          );
         }
-        if(_thisValue){
+        if (_thisValue) {
           this.echoValue = _thisValue;
           this.thisValue = _thisValue;
         }
         //取出控件的状态，给propData.defaultStatus赋值,如果为readonly时需要重新readonlyValueSet();
-        var stateFiledExp,newState;
+        var stateFiledExp, newState;
         stateFiledExp = this.propData.stateDataFiled;
-        if(stateFiledExp){
-          stateFiledExp = this.propData.echoDataName+(stateFiledExp.startsWiths("[")?"":".")+stateFiledExp;
-          newState = window.IDM.express.replace.call(this, "@["+filedExp+"]", dataObject);
+        if (stateFiledExp) {
+          stateFiledExp =
+            this.propData.echoDataName +
+            (stateFiledExp.startsWiths("[") ? "" : ".") +
+            stateFiledExp;
+          newState = window.IDM.express.replace.call(
+            this,
+            "@[" + filedExp + "]",
+            dataObject
+          );
         }
-        if(this.propData.stateFunction&&this.propData.stateFunction.length>0){
+        if (
+          this.propData.stateFunction &&
+          this.propData.stateFunction.length > 0
+        ) {
           try {
-            let param = {...this.propData.stateFunction[0].param,moduleObject:this.moduleObject,optionList:this.optionList,...newState};
+            let param = {
+              ...this.propData.stateFunction[0].param,
+              moduleObject: this.moduleObject,
+              optionList: this.optionList,
+              ...newState,
+            };
             param[this.propData.echoDataName] = object.data;
-            newState = window[this.propData.stateFunction[0].name]&&window[this.propData.stateFunction[0].name].call(this,param);
-          } catch (error) {
-          }
+            newState =
+              window[this.propData.stateFunction[0].name] &&
+              window[this.propData.stateFunction[0].name].call(this, param);
+          } catch (error) {}
         }
-        if(newState){
+        if (newState) {
           this.propData.defaultStatus = newState;
         }
       }
@@ -913,7 +986,7 @@ export default {
         success: true,
         message: "",
       };
-      if(this.propData.defaultStatus=="readonly"){
+      if (this.propData.defaultStatus == "readonly") {
         this.errorMessage = "";
         return result;
       }
@@ -977,64 +1050,90 @@ export default {
           this.propData.macAddressText || this.propData.label + "格式错误";
       } else if (this.propData.customFun && this.propData.customFunCode) {
         try {
-          var fun = eval(this.propData.customFunCode);
+          var fun = IDM.express.eval(this.propData.customFunCode);
           if (!fun(thisInputVal)) {
             result.success = false;
             result.message =
               this.propData.customFunText || this.propData.label + "格式错误";
           }
         } catch (e) {}
-      }else if(this.propData.interfaceVerify&&this.propData.interfaceVerifyUrl){
+      } else if (
+        this.propData.interfaceVerify &&
+        this.propData.interfaceVerifyUrl
+      ) {
         //开启接口校验
         let urlObject = window.IDM.url.queryObject(),
-        pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
+          pageId =
+            window.IDM.broadcast && window.IDM.broadcast.pageModule
+              ? window.IDM.broadcast.pageModule.id
+              : "";
         let paramObject = {
-          urlData:JSON.stringify(urlObject),
+          urlData: JSON.stringify(urlObject),
           pageId,
-          currentVal:thisInputVal
-        }
+          currentVal: thisInputVal,
+        };
         //接口校验前置条件，执行自定义函数
         let interfaceVerifyPreconditionResult = true;
-        if(this.propData.interfaceVerifyPreconditionFunction&&this.propData.interfaceVerifyPreconditionFunction.length>0){
+        if (
+          this.propData.interfaceVerifyPreconditionFunction &&
+          this.propData.interfaceVerifyPreconditionFunction.length > 0
+        ) {
           try {
-            let param = {...this.propData.interfaceVerifyPreconditionFunction[0].param,moduleObject:this.moduleObject,...paramObject};
-            interfaceVerifyPreconditionResult = window[this.propData.interfaceVerifyPreconditionFunction[0].name]&&window[this.propData.interfaceVerifyPreconditionFunction[0].name].call(this,param);
-          } catch (error) {
-          }
+            let param = {
+              ...this.propData.interfaceVerifyPreconditionFunction[0].param,
+              moduleObject: this.moduleObject,
+              ...paramObject,
+            };
+            interfaceVerifyPreconditionResult =
+              window[
+                this.propData.interfaceVerifyPreconditionFunction[0].name
+              ] &&
+              window[
+                this.propData.interfaceVerifyPreconditionFunction[0].name
+              ].call(this, param);
+          } catch (error) {}
         }
-        interfaceVerifyPreconditionResult!==false&&this.propData.interfaceVerifyUrl&&window.IDM.http.post(this.propData.interfaceVerifyUrl, paramObject).then((res) => {
-          if (res.data.code == 200) {
-            if(res.data.data===false||(res.data.data&&res.data.data.status===false)){
-              //接口验证失败后
-              result.success = false;
-              result.message = that.propData.interfaceVerifyText;
-              that.errorMessage = result.message;
-              if(that.propData.interfaceVerifyConfrim){
-                that.$confirm({
-                  title: that.propData.interfaceVerifyConfrimText,
-                  okText: "确定",
-                  cancelText: "取消",
-                  onOk() {
-                    var interfaceVerifyConfrimOkAction = that.propData.interfaceVerifyConfrimOkAction;
-                    interfaceVerifyConfrimOkAction&&interfaceVerifyConfrimOkAction.forEach(item=>{
-                      window[item.name]&&window[item.name].call(that,{
-                        urlData:urlObject,
-                        pageId,
-                        interfaceResultData:res.data,
-                        customParam:item.param,
-                        _this:that
-                      });
-                    })
-                  },
-                  onCancel() {
+        interfaceVerifyPreconditionResult !== false &&
+          this.propData.interfaceVerifyUrl &&
+          window.IDM.http
+            .post(this.propData.interfaceVerifyUrl, paramObject)
+            .then((res) => {
+              if (res.data.code == 200) {
+                if (
+                  res.data.data === false ||
+                  (res.data.data && res.data.data.status === false)
+                ) {
+                  //接口验证失败后
+                  result.success = false;
+                  result.message = that.propData.interfaceVerifyText;
+                  that.errorMessage = result.message;
+                  if (that.propData.interfaceVerifyConfrim) {
+                    that.$confirm({
+                      title: that.propData.interfaceVerifyConfrimText,
+                      okText: "确定",
+                      cancelText: "取消",
+                      onOk() {
+                        var interfaceVerifyConfrimOkAction =
+                          that.propData.interfaceVerifyConfrimOkAction;
+                        interfaceVerifyConfrimOkAction &&
+                          interfaceVerifyConfrimOkAction.forEach((item) => {
+                            window[item.name] &&
+                              window[item.name].call(that, {
+                                urlData: urlObject,
+                                pageId,
+                                interfaceResultData: res.data,
+                                customParam: item.param,
+                                _this: that,
+                              });
+                          });
+                      },
+                      onCancel() {},
+                    });
                   }
-                });
+                }
+              } else {
               }
-            }
-          } else {
-            
-          }
-        })
+            });
       }
 
       if (!result.success) {
