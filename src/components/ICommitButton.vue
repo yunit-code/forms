@@ -620,7 +620,7 @@ export default {
             }:{}
         }).then((res) => {
           //调用后续自定义函数
-          that.commitRunLaterHandle(res);
+          that.commitRunLaterHandle(res,moduleDataArray);
           callback&&callback(true);
         })
         .catch(function (error) {
@@ -640,7 +640,7 @@ export default {
             }:{}
         }).then((res) => {
           //调用后续自定义函数
-          that.commitRunLaterHandle(res);
+          that.commitRunLaterHandle(res,moduleDataArray);
           callback&&callback(true,res);
         })
         .catch(function (error) {
@@ -675,7 +675,7 @@ export default {
     /**
      * 确定后执行的函数
      */
-    commitRunLaterHandle(res){
+    commitRunLaterHandle(res,moduleDataArray){
       let urlObject = window.IDM.url.queryObject(),
       pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
       if(this.propData.commitRunLaterFunction&&this.propData.commitRunLaterFunction.length>0){
@@ -686,7 +686,8 @@ export default {
             pageId,
             customParam:item.param,
             _this:this,
-            resData:res
+            resData:res,
+            moduleData:moduleDataArray
           });
         })
       }
