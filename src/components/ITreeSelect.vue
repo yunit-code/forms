@@ -36,11 +36,12 @@
             :show-checked-strategy="TreeSelect[propData.showCheckedStrategy||'SHOW_CHILD']"
             :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
             :tree-data="optionList"
-            :treeDataSimpleMode="propData.optionType=='static'?true:(propData.treeDataSimpleMode||false)"
+            :treeDataSimpleMode="propData.optionType=='static'||propData.openSyncOption?true:(propData.treeDataSimpleMode||false)"
             :labelInValue="propData.labelInValue||false"
             :tree-default-expand-all="propData.treeDefaultExpandAll||false"
             :treeNodeFilterProp="propData.treeNodeFilterProp||'value'"
             :treeNodeLabelProp="propData.treeNodeLabelProp||'title'"
+            :loadData="loadData"
             :replaceFields="{
               children:propData.replaceFields_children||'children', 
               title:propData.replaceFields_title||'title', 
@@ -752,6 +753,34 @@ export default {
       //自定义渲染选择项
     },
     /**
+     * 异步加载数据
+     */
+    loadData(treeNode){
+      let that = this;
+      if(!this.propData.openSyncOption||!this.propData.asyncInterfaceUrl){
+        return null;
+      }
+      return new Promise((resolve,reject) => {
+        // const { id } = treeNode.dataRef;
+        let param = {}
+        if(that.propData.requestParamFormatFunction&&that.propData.requestParamFormatFunction.length>0){
+          window[that.propData.requestParamFormatFunction[0].name]&&window[that.propData.requestParamFormatFunction[0].name].call(this,
+          {...that.propData.requestParamFormatFunction[0].param,moduleObject:that.moduleObject,treeNode:treeNode.dataRef,param})
+        }
+        window.IDM.http.get(that.propData.asyncInterfaceUrl, param).then((res) => {
+            if (res.data.code == 200) {
+              that.optionListHandle(res.data,"asyncResultValField");
+              // that.optionList = res.data.data instanceof Array?res.data.data:[];
+            } else {
+              
+            }
+            resolve();
+          }).catch(error=>{
+            reject(error);
+          })
+      });
+    },
+    /**
      * 选项绑定
      */
     optionBind(byValData){
@@ -855,14 +884,14 @@ export default {
      * 选项处理函数
      * 先进行显示字段转换，然后再进行text、value转换，把最后的转换结果赋值给this.optionList
      */
-    optionListHandle(resultData){
+    optionListHandle(resultData,byValResultValField,async){
       if(!resultData){
         return;
       }
       let newList = resultData.data||(resultData instanceof Array?resultData:[]);
-      if(this.propData.byValResultValField){
+      if(this.propData[byValResultValField||'byValResultValField']){
         //给defaultValue设置dataFiled的值
-        var filedExp = this.propData.byValResultValField,dataName="resultData";
+        var filedExp = this.propData[byValResultValField||'byValResultValField'],dataName="resultData";
         filedExp =
           dataName +
           (filedExp.startsWiths("[") ? "" : ".") +
@@ -879,13 +908,16 @@ export default {
         this.propData.resultFormatFunction.forEach(item=>{
           try {
             //这里要根据判断进行递归的
-            newList = window[item.name]&&window[item.name].call(this,{...item.param,moduleObject:this.moduleObject,optionList:newList});
+            newList = window[item.name]&&window[item.name].call(this,{...item.param,moduleObject:this.moduleObject,optionList:newList,async});
           } catch (error) {
           }
         })
       }
-      this.optionList = newList;
-
+      if(async){
+        this.optionList = this.optionList.concat(newList);
+      }else{
+        this.optionList = newList;
+      }
     },
     //递归处理选中的
     getCheckDefaultValue(dataList,defaultValue){
