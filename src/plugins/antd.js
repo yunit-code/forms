@@ -19,6 +19,7 @@ import 'ant-design-vue/lib/alert/style/css';
 import 'ant-design-vue/lib/upload/style/css';
 import 'ant-design-vue/lib/modal/style/css';
 import 'ant-design-vue/lib/tree-select/style/css';
+import 'ant-design-vue/lib/tree/style/css';
 import {
   Button,
   Dropdown,
@@ -38,6 +39,7 @@ import {
   Upload,
   Modal,
   TreeSelect,
+  Tree,
 } from 'ant-design-vue';
 
 /* v1.1.3+ registration methods */
@@ -59,5 +61,6 @@ Vue.use(Alert);
 Vue.use(Upload);
 Vue.use(Modal);
 Vue.use(TreeSelect);
+Vue.use(Tree);
 Vue.prototype.$confirm = Modal.confirm;
 Vue.prototype.TreeSelect = TreeSelect;

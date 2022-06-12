@@ -769,7 +769,7 @@ export default {
         }
         window.IDM.http.get(that.propData.asyncInterfaceUrl, param).then((res) => {
             if (res.data.code == 200) {
-              that.optionListHandle(res.data,"asyncResultValField");
+              that.optionListHandle(res.data,"asyncResultValField",true);
               // that.optionList = res.data.data instanceof Array?res.data.data:[];
             } else {
               
@@ -1042,7 +1042,6 @@ export default {
       }
     },
     change(value, option,extra){
-      debugger
       this.verifySelectValue('change')
       let selectObject=this.getSelectedOption(value);
       if(selectObject==null){

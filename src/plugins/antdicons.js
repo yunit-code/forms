@@ -101,3 +101,9 @@ export {
 export {
     default as UploadOutline
 } from '@ant-design/icons/lib/outline/UploadOutline';
+export {
+    default as PaperClipOutline
+} from '@ant-design/icons/lib/outline/PaperClipOutline';
+export {
+    default as CaretDownFill
+} from '@ant-design/icons/lib/fill/CaretDownFill';

@@ -57,7 +57,7 @@
     }
   }
 //公共的popover
-.fic_common_popover{
+.fic_common_popover,.fic_common_popover_userselect{
   .fic_common_popover_content{
     width: 300px;
     display: flex;
@@ -103,5 +103,75 @@
             font-size: 12px;
         }
     }
+  }
+  .fic_common_popover_userselect_panel{
+    display: flex;
+    height: 350px;
+    & > div {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      .right-selected-box {
+        flex-grow: 2;
+        overflow: auto;
+      }
+      .footer-check-number {
+        right: 0px;
+        bottom: 0px;
+        font-size: 14px;
+        color: #999;
+        text-align: right;
+        display: flex;
+        height: 30px;
+        line-height: 30px;
+        background-color: #fff;
+        justify-content: space-between;
+        padding: 0px 10px;
+        white-space: nowrap;
+      }
+    }
+    & > div:first-child {
+      width: 60%;
+      border-right: 1px solid #d9d9d9;
+      overflow: auto;
+    }
+    & > div:last-child {
+      width: 40%;
+    }
+    .control-center-userdept-select-group {
+      padding: 0;
+      margin: 0;
+      .control-center-userdept-select-group-item {
+        display: block;
+        height: 32px;
+        padding: 0 30px 0px 10px;
+        line-height: 32px;
+        font-size: 14px;
+        box-sizing: border-box;
+        white-space: nowrap;
+        cursor: move;
+        color: rgba(0, 0, 0, 0.65);
+        background-color: #fff;
+        position: relative;
+        width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .control-center-userdept-select-group-close {
+        margin-left: 8px;
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        line-height: initial;
+        top: 9px;
+      }
+    }
+  }
+}
+.fic_common_popover_userselect{
+  .ant-popover-inner-content{
+    max-height: 350px;
+    padding: 0;
   }
 }
