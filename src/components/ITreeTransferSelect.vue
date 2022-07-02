@@ -701,14 +701,47 @@ export default {
      */
     onUserDeptCheck(selectedKeys, e) {
       console.log("onUserDeptCheck", selectedKeys, e);
+      //使用移除追加功能
+
+      const keyValueName =this.propData.replaceFields_value||'value';
+      const keyChildrenName = this.propData.replaceFields_children||'children';
       this.selectedListKey = selectedKeys;
-      let selectedList = [];
+      let selectedList = this.selectedList||[];
       e&&e.checkedNodes&&e.checkedNodes.forEach(item=>{
         let prop = _.cloneDeep(item.data.props.dataRef);
         // delete prop.dataRef
-        selectedList.push(prop);
+        let filterCount = selectedList.filter(sitem=>sitem[keyValueName]==prop[keyValueName])
+        if(filterCount&&filterCount.length>0){
+
+        }else{
+          selectedList.push(prop);
+        }
       })
+      if(e&&e.checked===false){
+        //是移除
+        for (let index = 0; index < selectedList.length; index++) {
+          const element = selectedList[index];
+          if(element[keyValueName]==e.node._props.dataRef[keyValueName]){
+            selectedList.splice(index,1);
+            break;
+          }
+        }
+      }
       this.selectedList=selectedList
+      
+      for (let index = 0; index < selectedList.length; index++) {
+        const element = selectedList[index];
+        let hasExists = false;
+        for (let sindex = 0; sindex < this.selectedListKey.length; sindex++) {
+          const itemValue = this.selectedListKey[sindex];
+          if(itemValue==element[keyValueName]){
+            hasExists = true;
+          }
+        }
+        if(!hasExists){
+          this.selectedListKey.push(element[keyValueName])
+        }
+      }
       // selectedKeys &&
       //   selectedKeys.forEach((fkey) => {
       //     this.selectOptionList &&
