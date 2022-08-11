@@ -1368,25 +1368,43 @@ export default {
     /**
      * 获取已选择的选项
      */
+    loop(data,newValue,sitem) {
+      data.forEach(item=>{
+        if(item[ this.propData.replaceFields_children ? this.propData.replaceFields_value : 'value' ]==sitem){
+          newValue.push(item);
+        }
+        if ( item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ] && item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ].length ) {
+          this.loop(item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ],newValue,sitem)
+        }
+      })
+    },
     getSelectedOption(value){
       let selectObject={};
       if(this.propData.isMultiple){
         let newValue = [];
         value.forEach(sitem=>{
-          this.optionList.forEach(item=>{
-            if(item.value==sitem){
-              newValue.push(item);
-            }
-          })
+          this.loop(this.optionList,newValue,sitem)
+          // this.optionList.forEach(item=>{
+          //   if(item.value==sitem){
+          //     newValue.push(item);
+          //   }
+          // })
         });
         selectObject = newValue;
       }else{
-        selectObject = this.optionList.filter(item=>item.value==value);
-        if(selectObject&&selectObject.length>0){
-          selectObject = selectObject[0];
+        let newValue = [];
+        this.loop(this.optionList,newValue,value)
+        if(newValue&&newValue.length>0){
+          selectObject = newValue[0];
         }else{
           return null;
         }
+        // selectObject = this.optionList.filter(item=>item.value==value);
+        // if(selectObject&&selectObject.length>0){
+        //   selectObject = selectObject[0];
+        // }else{
+        //   return null;
+        // }
       }
       return selectObject;
     },
