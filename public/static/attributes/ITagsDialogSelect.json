@@ -1,7 +1,7 @@
 {
-    "classId": "idm.componet.forms.itreeselect",
-    "comName": "树选择框",
-    "className": "ITreeSelect",
+    "classId": "idm.componet.forms.itagsdialogselect",
+    "comName": "标签选择",
+    "className": "ITagsDialogSelect",
     "comType": "common",
     "comLangue": "vue",
     "compositeAttr": [
@@ -25,7 +25,7 @@
                     "layoutType": "inline",
                     "text": "标题",
                     "bindKey": "label",
-                    "default": "树选择框"
+                    "default": "标签选择"
                 },
                 {
                     "type": "switch",
@@ -153,25 +153,11 @@
                     "default": "horizontal"
                 },
                 {
-                    "type": "radio",
+                    "type": "inputNumber",
                     "layoutType": "inline",
-                    "text": "尺寸",
+                    "text": "高度",
                     "bindKey": "size",
-                    "dictionary": [
-                        {
-                            "label": "小",
-                            "value": "small"
-                        },
-                        {
-                            "label": "中",
-                            "value": "default"
-                        },
-                        {
-                            "label": "大",
-                            "value": "large"
-                        }
-                    ],
-                    "default": "default"
+                    "default": 200
                 },
                 {
                     "type": "radio",
@@ -251,79 +237,38 @@
                 {
                     "type": "switch",
                     "layoutType": "inline",
-                    "text": "清除图标",
-                    "bindKey": "clearIcon"
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "复选框",
-                    "bindKey": "treeCheckable",
-                    "desc":"当设置为 true 时树结构title前多一项复选框且 多选模式 自动开启为多选",
-                    "default":false
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "多选模式",
-                    "bindKey": "isMultiple",
-                    "desc":"当设置 treeCheckable 时自动变为 true",
-                    "default":false
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "显示搜索",
-                    "bindKey": "showSearch",
-                    "default":false,
-                    "display":"@[!isMultiple]"
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "搜索提示",
-                    "bindKey": "searchPlaceholder",
-                    "placeholder": "请输入",
-                    "display":"@[showSearch]"
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
                     "text": "校验占位",
                     "desc":"是否预留校验信息空间，开启将会在底部占用25px空白预留给校验信息使用",
                     "bindKey": "retainBottomHeight",
                     "default": true
-                },
-                {
-                    "type": "radio",
+                },{
+                    "type": "input",
                     "layoutType": "inline",
-                    "text": "回填方式",
-                    "bindKey": "showCheckedStrategy",
-                    "desc":"定义选中项回填的方式。所有选中节点:包括父节点； 只显示父节点：当父节点下所有子节点都选中时",
-                    "dictionary": [
-                        {
-                            "label": "只显示子节点",
-                            "value": "SHOW_CHILD"
-                        },
-                        {
-                            "label": "只显示父节点",
-                            "value": "SHOW_PARENT"
-                        },
-                        {
-                            "label": "所有选中节点",
-                            "value": "SHOW_ALL"
-                        }
-                    ],
-                    "styleType":"radio",
-                    "default": "SHOW_CHILD"
-                },
-                {
-                    "type": "switch",
+                    "text": "唯一标识",
+                    "bindKey": "tagKey",
+                    "desc":"设置在数据结构中那个属性字段为数据选项的唯一标识",
+                    "default": "id"
+                },{
+                    "type": "input",
                     "layoutType": "inline",
-                    "text": "展开节点",
-                    "desc":"设置默认展开所有树节点",
-                    "bindKey": "treeDefaultExpandAll",
-                    "default": false
+                    "text": "名称标识",
+                    "desc":"设置在数据结构中那个属性字段为数据选项中显示名称的字段名称",
+                    "bindKey": "tagText",
+                    "default": "name"
+                }
+            ]
+        },{
+            "type": "group",
+            "text": "选项绑定",
+            "desc": "点击？查看选项绑定设置用法指南",
+            "children":[
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "选择点击自定义函数",
+                    "bindKey": "tagSelectCustomFunction",
+                    "desc": "当控件为可编辑状态下标签右侧的选择点击时间触发的自定义函数，可以利用此函数来调用起窗口选择",
+                    "multiple": true
                 }
             ]
         },
@@ -345,6 +290,54 @@
                     "bindKey": "requiredText",
                     "default": "",
                     "display": "@[required]"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "最小长度",
+                    "bindKey": "minLength"
+                },
+                {
+                    "type": "inputNumber",
+                    "layoutType": "inline",
+                    "text": "最小长度",
+                    "bindKey": "minLengthNumber",
+                    "maxLength": 999999999,
+                    "minLength": 0,
+                    "default": 999999999,
+                    "display": "@[minLength]"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "block",
+                    "text": "最小长度错误提示",
+                    "bindKey": "minLengthText",
+                    "default": "",
+                    "display": "@[minLength]"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "最大长度",
+                    "bindKey": "maxLength"
+                },
+                {
+                    "type": "inputNumber",
+                    "layoutType": "inline",
+                    "text": "最大长度",
+                    "bindKey": "maxLengthNumber",
+                    "maxLength": 99999,
+                    "minLength": 0,
+                    "default": 15,
+                    "display": "@[maxLength]"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "block",
+                    "text": "最大长度错误提示",
+                    "bindKey": "maxLengthText",
+                    "default": "",
+                    "display": "@[maxLength]"
                 },
                 {
                     "type": "switch",
@@ -463,7 +456,7 @@
                 {
                     "type": "group",
                     "text": "默认状态样式",
-                    "desc": "下拉框未获得焦点情况下的样式设置",
+                    "desc": "文本框未获得焦点情况下的样式设置",
                     "helpUrl": "",
                     "children": [
                         {
@@ -647,7 +640,7 @@
                 {
                     "type": "group",
                     "text": "焦点状态样式",
-                    "desc": "下拉框未获得焦点情况下的样式设置",
+                    "desc": "文本框获得焦点情况下的样式设置",
                     "helpUrl": "",
                     "children": [
                         {
@@ -831,7 +824,7 @@
                 {
                     "type": "group",
                     "text": "错误状态样式",
-                    "desc": "下拉框校验未通过的错误情况下的样式设置",
+                    "desc": "文本框校验未通过的错误情况下的样式设置",
                     "helpUrl": "",
                     "children": [
                         {
@@ -1016,344 +1009,6 @@
         },
         {
             "type": "group",
-            "text": "标签样式设置",
-            "desc": "点击？查看样式设置用法指南",
-            "helpUrl": "",
-            "display": "@[isMultiple]",
-            "children": [
-                {
-                    "type": "font",
-                    "layoutType": "block",
-                    "text": "标签文字",
-                    "bindKey": "tagsFont"
-                },
-                {
-                    "type": "border",
-                    "layoutType": "block",
-                    "text": "边框设置",
-                    "bindKey": "tagsBorder"
-                },
-                {
-                    "type": "colorPicker",
-                    "layoutType": "inline",
-                    "text": "背景色",
-                    "bindKey": "tagsBgColor",
-                    "placeholder": "请选择颜色",
-                    "default": {}
-                }
-            ]
-        },
-        {
-            "type": "group",
-            "text": "选项绑定",
-            "desc": "点击？查看选项绑定设置用法指南",
-            "children": [
-                {
-                    "type": "radio",
-                    "layoutType": "inline",
-                    "text": "数据来源",
-                    "bindKey": "optionType",
-                    "dictionary": [
-                        {
-                            "label": "静态数据",
-                            "value": "static"
-                        },
-                        {
-                            "label": "数据接口",
-                            "value": "interface"
-                        },
-                        {
-                            "label": "自定义函数",
-                            "value": "customFun"
-                        },
-                        {
-                            "label": "接收其他组件传值",
-                            "value": "byval"
-                        },
-                        {
-                            "label": "页面接口的结果集",
-                            "value": "pageInterfaceResult"
-                        }
-                    ],
-                    "default": "static",
-                    "styleType": "radio"
-                },
-                {
-                    "type": "table",
-                    "text": "静态选项",
-                    "bindKey": "optionStaticList",
-                    "tabText": "选项[index]",
-                    "children": [
-                        {
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "ID",
-                            "bindKey": "id",
-                            "desc":"数据的ID",
-                            "placeholder": "请输入"
-                        },
-                        {
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "PID",
-                            "bindKey": "pId",
-                            "desc":"数据的FID，会根据这个找到父级",
-                            "placeholder": "请输入"
-                        },
-                        {
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "显示值",
-                            "bindKey": "label",
-                            "placeholder": "请输入"
-                        },
-                        {
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "选项值",
-                            "bindKey": "value",
-                            "placeholder": "请输入"
-                        },
-                        {
-                            "type": "switch",
-                            "layoutType": "inline",
-                            "text": "默认选中",
-                            "bindKey": "check",
-                            "default":false
-                        },
-                        {
-                            "type": "switch",
-                            "layoutType": "inline",
-                            "text": "是否可选",
-                            "bindKey": "selectable",
-                            "default":true
-                        },
-                        {
-                            "type": "switch",
-                            "layoutType": "inline",
-                            "text": "显示复选",
-                            "desc":"当树为 显示复选 时，设置独立节点是否展示 Checkbox",
-                            "bindKey": "checkable",
-                            "default":true
-                        },
-                        {
-                            "type": "switch",
-                            "layoutType": "inline",
-                            "text": "禁用复选",
-                            "desc":"禁掉 checkbox",
-                            "bindKey": "disableCheckbox",
-                            "default":false
-                        },
-                        {
-                            "type": "switch",
-                            "layoutType": "inline",
-                            "text": "是否禁用",
-                            "bindKey": "disabled",
-                            "default":false
-                        }
-                    ],
-                    "display": "@[optionType=='static']"
-                },
-                {
-                    "type": "textarea",
-                    "layoutType": "inline",
-                    "text": "接口地址",
-                    "bindKey": "optionInterfaceUrl",
-                    "desc": "请按照统一标准的返回格式返回数组格式的数据，格式如下：{\"code\":\"200\",\"data\":[{children:[{}]}],...}",
-                    "default": "",
-                    "display": "@[optionType=='interface']"
-                },
-                {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "自定义函数",
-                    "bindKey": "optionFunction",
-                    "desc": "获取选项数据源的时候会调用此方法，返回数据格式如下：[{children:[{}]}]",
-                    "display": "@[optionType=='customFun']",
-                    "multiple": false
-                },
-                {
-                    "type": "radio",
-                    "layoutType": "inline",
-                    "text": "值类型",
-                    "bindKey": "byValType",
-                    "desc": "选择接收其他组件传值后要执行的后续动作，也就是选择接收到的值的作用是什么，处理完后返回选项所需要的结果",
-                    "dictionary": [
-                        {
-                            "label": "直接使用结果",
-                            "value": "resultVal"
-                        },
-                        {
-                            "label": "作为接口参数",
-                            "value": "interfaceParam"
-                        },
-                        {
-                            "label": "自定义函数",
-                            "value": "customFun"
-                        }
-                    ],
-                    "default": "resultVal",
-                    "display": "@[optionType=='byval']",
-                    "styleType": "radio"
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "参数名称",
-                    "bindKey": "byValInterfaceParam",
-                    "default": "",
-                    "display": "@[optionType=='byval'&&byValType=='interfaceParam']"
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "取值规则",
-                    "bindKey": "byValInterfaceParamValueRule",
-                    "default": "",
-                    "desc":"用于设置接收的其他组件传值所需要过滤的字段，比如传值过来是一个对象{a:1,b:2}，而参数只需要b的值2即可，所以这里可以填写b，支持表达式，如果不填则是整个作为字符串传递到后端接口",
-                    "display": "@[optionType=='byval'&&byValType=='interfaceParam']"
-                },
-                {
-                    "type": "textarea",
-                    "layoutType": "inline",
-                    "text": "接口地址",
-                    "bindKey": "byValInterfaceUrl",
-                    "default": "",
-                    "display": "@[optionType=='byval'&&byValType=='interfaceParam']"
-                },
-                {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "自定义函数",
-                    "bindKey": "byValFunction",
-                    "desc": "其他组件传值后会把值传递到此方法并且调用，函数返回数据格式如下：[{children:[{}]}]",
-                    "display": "@[optionType=='byval'&&byValType=='customFun']",
-                    "multiple": false
-                },
-                {
-                    "type": "input",
-                    "layoutType": "inline",
-                    "text": "结果集名",
-                    "bindKey": "pageInterfaceResultDataName",
-                    "desc": "页面接口设定的结果集名称，位置为：页面设置》高级设置》页面接口",
-                    "default": "",
-                    "placeholder": "示例：resultData",
-                    "display": "@[optionType=='pageInterfaceResult']"
-                },
-                {
-                    "type": "textarea",
-                    "layoutType": "inline",
-                    "text": "显示结果",
-                    "bindKey": "byValResultValField",
-                    "desc": "根据结果值的数据格式指定结果集的字段，比如结果值为{data:[{text:'显示值',value:'选项值'}]}，则这里应该填写data，如果不填写则直接使用结果值",
-                    "default": "",
-                    "display": "@[optionType!='static']"
-                },
-                {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "显示结果格式化自定义函数",
-                    "bindKey": "resultFormatFunction",
-                    "desc": "对显示结果取到的数据进行再次格式化，以返回控件所需要展示成理想结果的数据",
-                    "display": "@[optionType!='static']",
-                    "multiple": false
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "简单格式",
-                    "desc":"使用简单格式的 treeData，具体设置参考可设置的类型 (此时 treeData 应变为这样的数据结构: [{id:1, pId:0, value:'1', label:\"test1\",...},...], pId 是父节点的 id)，注意：静态数据直接强制为true，其他请根据返回结果进行选择",
-                    "bindKey": "treeDataSimpleMode",
-                    "default": false
-                },
-                {
-                    "type": "group",
-                    "text": "属性转换设置",
-                    "desc": "点击？查看属性转换设置用法指南",
-                    "children": [
-                        {
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "过滤KEY",
-                            "bindKey": "treeNodeFilterProp",
-                            "desc":"输入项过滤对应的 treeNode 属性key",
-                            "placeholder": "示例：value"
-                        },{
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "显示KEY",
-                            "bindKey": "treeNodeLabelProp",
-                            "desc":"作为显示的时候设置显示 treeNode 属性key",
-                            "placeholder": "示例：title"
-                        },{
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "children",
-                            "bindKey": "replaceFields_children",
-                            "desc":"非简单格式下对应的子节点key",
-                            "placeholder": "示例：children"
-                        },{
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "title",
-                            "bindKey": "replaceFields_title",
-                            "desc":"非简单格式下对应的显示值",
-                            "placeholder": "示例：title"
-                        },{
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "key",
-                            "bindKey": "replaceFields_key",
-                            "desc":"非简单格式下对应的ID值，数据唯一的",
-                            "placeholder": "示例：key"
-                        },{
-                            "type": "input",
-                            "layoutType": "inline",
-                            "text": "value",
-                            "bindKey": "replaceFields_value",
-                            "desc":"非简单格式下对应的value值",
-                            "placeholder": "示例：value"
-                        }
-                    ]
-                },
-                {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "异步加载",
-                    "desc":"开启后则将会使用异步加载，在配置异步加载之前请先配置首次加载的数据接口，开启后将强制把数据格式变为简单格式，并且返回结构必须带isLeaf",
-                    "bindKey": "openSyncOption",
-                    "default": false
-                },
-                {
-                    "type": "textarea",
-                    "layoutType": "inline",
-                    "text": "接口地址",
-                    "bindKey": "asyncInterfaceUrl",
-                    "default": "",
-                    "display": "@[openSyncOption]"
-                },
-                {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "请求参数格式化自定义函数",
-                    "bindKey": "requestParamFormatFunction",
-                    "desc": "对要请求的参数进行格式化处理，接收参数{...自定义,treeNode：当前节点信息,param:{这里才是最终要请求的参数，给此对象赋值即可}}",
-                    "display": "@[openSyncOption]",
-                    "multiple": false
-                },
-                {
-                    "type": "textarea",
-                    "layoutType": "inline",
-                    "text": "显示结果",
-                    "bindKey": "asyncResultValField",
-                    "desc": "根据结果值的数据格式指定结果集的字段，比如结果值为{data:[{text:'显示值',value:'选项值'}]}，则这里应该填写data，如果不填写则直接使用结果值",
-                    "default": "",
-                    "display": "@[openSyncOption]"
-                }
-            ]
-        },
-        {
-            "type": "group",
             "text": "结果联动",
             "desc": "点击？查看结果联动设置用法指南",
             "children": [
@@ -1426,14 +1081,6 @@
             "desc": "点击？查看高级设置用法指南",
             "children": [
                 {
-                    "type": "switch",
-                    "layoutType": "inline",
-                    "text": "value模式",
-                    "desc":"设置是否把每个选项的 label 包装到 value 中，会把 value 类型从 string 变为 {value: string, label: string} 的格式，是否开启建议根据接口保存所用到的格式选择",
-                    "bindKey": "labelInValue",
-                    "default": false
-                },
-                {
                     "type": "input",
                     "layoutType": "inline",
                     "text": "表单标识",
@@ -1448,29 +1095,6 @@
                     "bindKey": "formGroupKey",
                     "desc": "表单分组标识，用于批量提交分组标识相同的表单控件值，减少提交控件一个一个选择控件的范围",
                     "default": "formGroupKey"
-                },
-                {
-                    "type": "group",
-                    "text": "联动组件",
-                    "desc": "当选择的数据有变动会联动这里选择的组件，把当前选中的对象传递给这些组件",
-                    "children": [
-                        {
-                            "type": "pageModuleSelect",
-                            "layoutType": "block",
-                            "text": "需求组件范围",
-                            "desc": "当前选项变更需要联动其他组件需求值（比如下拉选项数据等）的组件范围",
-                            "bindKey": "linkageDemandPageModule",
-                            "multiple": true
-                        },
-                        {
-                            "type": "pageModuleSelect",
-                            "layoutType": "block",
-                            "text": "结果组件范围",
-                            "desc": "当前选项变更需要联动其他组件变更结果值的组件范围",
-                            "bindKey": "linkageResultPageModule",
-                            "multiple": true
-                        }
-                    ]
                 },
                 {
                     "type":"group",
@@ -1546,20 +1170,50 @@
                     ]
                 },
                 {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "定制渲染只读态",
-                    "bindKey": "renderFunction",
-                    "desc": "选择后存储的是选项值，显示的时候默认转换显示为text，可以根据参数定制自己需要显示的格式",
-                    "multiple": false
+                    "type": "group",
+                    "text": "数据变动联动组件",
+                    "desc": "当数据有变动会联动这里选择的组件，把当前结果的对象传递给这些组件",
+                    "children": [
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "需求组件范围",
+                            "desc": "当前数据变动需要联动其他组件需求值（比如下拉框选项接口参数等）的组件范围",
+                            "bindKey": "linkageDemandPageModule",
+                            "multiple": true
+                        },
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "结果组件范围",
+                            "desc": "当前数据变动需要联动其他组件变更结果值的组件范围",
+                            "bindKey": "linkageResultPageModule",
+                            "multiple": true
+                        }
+                    ]
                 },
                 {
-                    "type": "actionSelect",
-                    "layoutType": "block",
-                    "text": "值发生变化时的动作",
-                    "bindKey": "changeOptionFunction",
-                    "desc": "当选中的值发生变化时会调用此处设置的方法",
-                    "multiple": false
+                    "type": "group",
+                    "text": "失去焦点联动组件",
+                    "desc": "当失去焦点会联动这里选择的组件，把当前结果的对象传递给这些组件",
+                    "children": [
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "需求组件范围",
+                            "desc": "当前失去焦点需要联动其他组件需求值（比如下拉框选项接口参数等）的组件范围",
+                            "bindKey": "blurLinkageDemandPageModule",
+                            "multiple": true
+                        },
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "结果组件范围",
+                            "desc": "当前失去焦点需要联动其他组件变更结果值的组件范围",
+                            "bindKey": "blurLinkageResultPageModule",
+                            "multiple": true
+                        }
+                    ]
                 }
             ]
         }

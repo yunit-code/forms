@@ -36,7 +36,7 @@
             >*
           </span>
           <span class="label-content">{{
-            IDM.env_dev ? propData.label : "多行输入框"
+            IDM.env_dev ? propData.label : "子表表格"
           }}</span>
         </div>
         <div
@@ -44,42 +44,102 @@
           v-if="propData.defaultStatus != 'readonly'"
           :style="getStyle('content')"
         >
-          <a-textarea
-            :ref="'iinput' + moduleObject.id"
-            :class="{ 'error-state': errorMessage }"
-            :disabled="propData.defaultStatus == 'disabled'"
-            v-model="thisValue"
-            :size="propData.size"
-            :allowClear="propData.clearIcon"
-            :placeholder="propData.placeholder"
-            :autoSize="{minRows: propData.minRows||1, maxRows: propData.maxRows||6}"
-            @blur="blurChange"
-          >
-            <a-tooltip
-              slot="suffix"
-              :title="propData.suffixContent"
-              v-if="propData.suffixContent && propData.suffixType == 'tip'"
-            >
-              <a-icon type="info-circle" style="color: rgba(0, 0, 0, 0.45)" />
-            </a-tooltip>
+        <div :class="{ 'error-state': errorMessage }">
+          <div style="margin-bottom:10px;text-align:right">
+            <a-button  type="primary" @click="addRow()">添加</a-button>
+          </div>
+          <a-table :columns="allColumns" :data-source="thisValue" 
+              :size="propData.size" bordered>
             <template
-              slot="suffix"
-              v-else-if="
-                propData.suffixContent && propData.suffixType == 'font'
-              "
-              >{{ propData.suffixContent }}</template
+              v-for="col in allColumns"
+              :slot="col.dataIndex"
+              slot-scope="text, record, index"
             >
-            <template slot="prefix" v-if="propData.prefixContent">{{
-              propData.prefixContent
-            }}</template>
-          </a-textarea>
+              <div v-if="col.dataIndex!='operation'"
+               :key="col.dataIndex">
+                <template v-if="record.editable">
+                  <a-input
+                    :size="propData.size"
+                    v-if="col.type=='input'"
+                    style="margin: -5px 0"
+                    :value="text"
+                    @change="e => handleChange(e.target.value, record.idm_datakey, col.dataIndex)"
+                  />
+                  <a-switch
+                    :size="propData.size" style="margin: -5px 0" v-else-if="col.type=='switch'" 
+                  v-model="record[col.dataIndex]"
+                  ></a-switch>
+                  <a-select
+                    :size="propData.size" :labelInValue="col.type=='mSelect'" :mode="col.type=='mSelect'?'multiple':'default'" v-else-if="col.type=='select'||col.type=='mSelect'" v-model="record[col.dataIndex]" style="margin: -5px 0;min-width:100%">
+                    <a-select-option v-for="oitem in col.dictionary" :key="oitem.key" :value="oitem.key">
+                      {{oitem.label}}
+                    </a-select-option>
+                  </a-select>
+                  <a-radio-group
+                    :size="propData.size" v-else-if="col.type=='radio'" :name="col.dataIndex" v-model="record[col.dataIndex]">
+                    <a-radio v-for="oitem in col.dictionary" :key="oitem.key" :value="oitem.key">
+                      {{oitem.label}}
+                    </a-radio>
+                  </a-radio-group>
+                </template>
+                <template v-else>
+                  <template v-if="col.type=='mSelect'">
+                    {{ text?text.map(item=>{return item.label}).join(","):"" }}
+                  </template>
+                  <template v-else-if="col.type=='radio'||col.type=='select'">
+                    {{ text&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
+                  </template>
+                  <template v-else>
+                    {{ text }}
+                  </template>
+
+                </template>
+              </div>
+              <div v-else class="editable-row-operations" :key="col.dataIndex">
+                <span v-if="record.editable">
+                  <a @click="() => save(record.idm_datakey)">保存</a>&nbsp;&nbsp;
+                  <a-popconfirm ok-text="确定"
+    cancel-text="取消" title="确定要取消吗?" @confirm="() => cancel(record.idm_datakey)">
+                    <a>取消</a>
+                  </a-popconfirm>
+                </span>
+                <span v-else>
+                  <a :disabled="editingKey !== ''" @click="() => edit(record.idm_datakey)">修改</a>
+                </span>
+                &nbsp;&nbsp;<a @click="() => addRow(index)">添加一行</a>
+                &nbsp;&nbsp;<a :disabled="editingKey !== ''&&editingKey!=record.idm_datakey" @click="() => delRow(index,record.idm_datakey)">删除</a>
+              </div>
+            </template>
+          </a-table>
+        </div>
+        
         </div>
         <div
           class="fic-input-box fic-readonly-font"
           v-else
           :style="getStyle('content')"
         >
-          {{ thisValue }}
+        <a-table :columns="allColumns" :data-source="thisValue" 
+              :size="propData.size" bordered>
+            <template
+              v-for="col in allColumns"
+              :slot="col.dataIndex"
+              slot-scope="text, record, index"
+            >
+              <div v-if="col.dataIndex!='operation'"
+               :key="col.dataIndex">
+                  <template v-if="col.type=='mSelect'">
+                    {{ text?text.map(item=>{return item.label}).join(","):"" }}
+                  </template>
+                  <template v-else-if="col.type=='radio'||col.type=='select'">
+                    {{ text&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
+                  </template>
+                  <template v-else>
+                    {{ text }}
+                  </template>
+              </div>
+            </template>
+          </a-table>
         </div>
         <div
           class="fic-message-box"
@@ -125,14 +185,55 @@
 </template>
 
 <script>
+window.getdictionary=function(){
+  return [{
+              key:"jack",
+              label:"Jack"
+            },{
+              key:"lucy",
+              label:"Lucy"
+            }];
+}
 export default {
-  name: "ITextarea",
+  name: "IChildrenTable",
   data() {
+    this.cacheThisValue = [];
     return {
+      //table子表的
+      allColumns:[],
+      editingKey: '',
+
       errorMessage: "",
-      thisValue: "",
+      thisValue: [],
       moduleObject: {},
-      propData: this.$root.propData.compositeAttr || {},
+      propData: this.$root.propData.compositeAttr || {
+        tableColumns:[
+          {
+            title: 'name',
+            dataIndex: 'name',
+            width: '25%',
+            type:"input",
+            defaultValue:"1",
+            scopedSlots: { customRender: 'name' },
+          },
+          {
+            title: 'age',
+            dataIndex: 'age',
+            width: '15%',
+            type:"mSelect",
+            dictionaryFun:[{name:"getdictionary"}],
+            scopedSlots: { customRender: 'age' },
+          },
+          {
+            title: 'address',
+            dataIndex: 'address',
+            width: '40%',
+            type:"switch",
+            defaultValue:true,
+            scopedSlots: { customRender: 'address' },
+          }
+        ]
+      },
       //回显的值，并且有值的时候也只是为了阻止表单联动的时候覆盖thisValue，有回显值第一次不覆盖thisValue，后面继续覆盖
       echoValue:null
     };
@@ -140,6 +241,7 @@ export default {
   props: {},
   created() {
     this.moduleObject = this.$root.moduleObject;
+    this.setAllColumns();
     // console.log(this.moduleObject)
     // this.propData = testAttr;
     this.convertAttrToStyleObject();
@@ -147,6 +249,92 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    setAllColumns(){
+      let tableColumns = _.cloneDeep(this.propData.tableColumns);
+      tableColumns&&tableColumns.forEach(item=>{
+        item.scopedSlots={ customRender: item.dataIndex }
+        if(item.dictionaryFun&&item.dictionaryFun.length>0){
+          //调用自定义函数
+          item.dictionary = window[item.dictionaryFun[0].name]&&window[item.dictionaryFun[0].name].call(this,{
+            customParam:item.dictionaryFun[0].param,
+            _this:this
+          });
+        }
+      })
+      this.allColumns = tableColumns;
+      this.allColumns.push({
+            title: '操作',
+            dataIndex: 'operation',
+            scopedSlots: { customRender: 'operation' },
+          })
+    },
+    delRow(index,key){
+      if(this.editingKey == key){
+        this.editingKey = ""
+      }
+      this.thisValue.splice(index,1)
+      this.cacheThisValue = _.cloneDeep(this.thisValue);
+    },
+    addRow(index){
+      //把之前的未保存的保存
+      this.thisValue.forEach(item=>{
+        item.editable&&this.save(item.idm_datakey)
+      })
+      let idm_datakey = IDM.uuid();
+      this.editingKey = idm_datakey;
+      let pushObj = {idm_datakey,editable:true};
+      this.allColumns.forEach(item=>{
+          pushObj[item.dataIndex] = item.defaultValue;
+      })
+      if(!index&&index!==0){
+        this.thisValue.push(pushObj);
+      }else{
+        this.thisValue.splice(index+1,0,pushObj)
+      }
+      this.cacheThisValue = _.cloneDeep(this.thisValue);
+    },
+    handleChange(value, key, column) {
+      const newData = [...this.thisValue];
+      const target = newData.find(item => key === item.idm_datakey);
+      if (target) {
+        target[column] = value;
+        this.thisValue = newData;
+      }
+    },
+    edit(key) {
+      const newData = [...this.thisValue];
+      const target = newData.find(item => key === item.idm_datakey);
+      this.editingKey = key;
+      if (target) {
+        target.editable = true;
+        this.thisValue = newData;
+      }
+    },
+    save(key) {
+      const newData = [...this.thisValue];
+      const newCacheData = [...this.cacheThisValue];
+      const target = newData.find(item => key === item.idm_datakey);
+      const targetCache = newCacheData.find(item => key === item.idm_datakey);
+      if (target && targetCache) {
+        delete target.editable;
+        this.thisValue = newData;
+        Object.assign(targetCache, target);
+        this.cacheThisValue = newCacheData;
+      }
+      this.editingKey = '';
+    },
+    cancel(key) {
+      const newData = [...this.thisValue];
+      const target = newData.find(item => key === item.idm_datakey);
+      this.editingKey = '';
+      if (target) {
+        Object.assign(target, this.cacheThisValue.find(item => key === item.idm_datakey));
+        delete target.editable;
+        this.thisValue = newData;
+      }
+    },
+
+
     /**
      * 把属性转换成错误消息的文字样式
      */
@@ -636,6 +824,7 @@ export default {
      */
     propDataWatchHandle(propData) {
       this.propData = propData.compositeAttr || {};
+      this.setAllColumns();
       this.convertAttrToStyleObject();
     },
     /**
@@ -643,7 +832,7 @@ export default {
      */
     convertAttrToStyleObject() {
       //默认值
-      this.thisValue = this.propData.defaultValue || "";
+      this.thisValue = this.propData.defaultValue || [];
       this.convertAttrToInputDefaultStyle();
       this.convertAttrToInputFoucsStyle();
       this.convertAttrToReadOnlyFontStyle();
@@ -673,7 +862,7 @@ export default {
               if (res.data.code == 200) {
                 that.thisValue = res.data.data;
               } else {
-                that.thisValue = '';
+                that.thisValue = [];
               }
             })
           break;
@@ -701,7 +890,7 @@ export default {
      * 重置组件的默认值
      */
     resetDefaultValue(object){
-      this.thisValue = this.propData.defaultValue || "";
+      this.thisValue = this.propData.defaultValue || [];
     },
     /**
      * 内容变更事件
@@ -832,7 +1021,7 @@ export default {
         }
         if(_thisValue){
           this.echoValue = _thisValue;
-          this.thisValue = _thisValue;
+          this.thisValue = IDM.type(_thisValue)=="string"?JSON.parse(_thisValue):_thisValue;
         }
         //取出控件的状态，给propData.defaultStatus赋值,如果为readonly时需要重新readonlyValueSet();
         var stateFiledExp,newState;
@@ -872,8 +1061,11 @@ export default {
       if (!this.verifyInputValue().success) {
         result.type = "error";
         result.message = this.verifyInputValue().message;
-        this.$refs["iinput" + this.moduleObject.id].focus();
+        // this.$refs["iinput" + this.moduleObject.id].focus();
       } else {
+        this.thisValue&&this.thisValue.forEach(item=>{
+          delete item.editable;
+        })
         result.data = this.thisValue;
       }
       return result;
@@ -898,9 +1090,9 @@ export default {
         this.errorMessage = "";
         return result;
       }
-      let thisInputVal = this.thisValue.trim();
+      let thisInputVal = this.thisValue;
       //这里开始判断执行是否需要校验
-      if (this.propData.required && thisInputVal == "") {
+      if (this.propData.required && thisInputVal.length==0) {
         //必填
         result.success = false;
         result.message =
@@ -912,7 +1104,7 @@ export default {
         result.success = false;
         result.message =
           this.propData.minLengthText ||
-          this.propData.label + "最小长度为" + this.propData.minLengthNumber;
+          this.propData.label + "最小数量为" + this.propData.minLengthNumber;
       } else if (
         this.propData.maxLength &&
         thisInputVal.length > this.propData.maxLengthNumber
@@ -920,7 +1112,7 @@ export default {
         result.success = false;
         result.message =
           this.propData.maxLengthText ||
-          this.propData.label + "最大长度为" + this.propData.maxLengthNumber;
+          this.propData.label + "最大数量为" + this.propData.maxLengthNumber;
       } else if (this.propData.customFun && this.propData.customFunCode) {
         try {
           var fun = IDM.express.eval(this.propData.customFunCode);
@@ -937,7 +1129,7 @@ export default {
         let paramObject = {
           urlData:JSON.stringify(urlObject),
           pageId,
-          currentVal:thisInputVal
+          currentVal:JSON.stringify(thisInputVal)
         }
         //接口校验前置条件，执行自定义函数
         let interfaceVerifyPreconditionResult = true;
@@ -1066,6 +1258,7 @@ export default {
       handler() {
         this.verifyInputValue("change");
         this.change(this.thisValue);
+
       },
     },
   },

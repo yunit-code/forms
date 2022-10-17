@@ -922,6 +922,7 @@ export default {
       }
       //只读情况下调用只读显示值
       if(this.propData.defaultStatus=="readonly"){
+        console.log("选项绑定后,回显值"+this.moduleObject.packageid,this.thisValue,this.optionList)
         this.readonlyValueSet();
       }
 
@@ -1198,6 +1199,7 @@ export default {
         if(newState){
           this.propData.defaultStatus = newState;
         }
+        console.log("回显值"+this.moduleObject.packageid,this.thisValue,this.optionList)
         this.propData.defaultStatus=="readonly"&&this.readonlyValueSet();
       }else if(object.key==this.propData.pageInterfaceResultDataName){
         //下拉选项

@@ -847,7 +847,11 @@ export default {
                   urlData:JSON.stringify(urlObject),
                   pageId
                 }
-                paramObject[this.propData.byValInterfaceParam] = JSON.stringify(byValData);
+                let newByValData = JSON.stringify(byValData);
+                if(this.propData.byValInterfaceParamValueRule){
+                  newByValData = IDM.express.replace("@["+this.propData.byValInterfaceParamValueRule+"]",byValData);
+                }
+                paramObject[this.propData.byValInterfaceParam] = newByValData;
                 this.propData.byValInterfaceUrl&&window.IDM.http.get(this.propData.byValInterfaceUrl, paramObject).then((res) => {
                   if (res.data.code == 200) {
                     that.optionListHandle(res.data);
@@ -1369,12 +1373,16 @@ export default {
      * 获取已选择的选项
      */
     loop(data,newValue,sitem) {
+      let sitemValue = sitem;
+      if(this.propData.labelInValue){
+        sitemValue=sitemValue.value;
+      }
       data.forEach(item=>{
-        if(item[ this.propData.replaceFields_children ? this.propData.replaceFields_value : 'value' ]==sitem){
+        if(item[ this.propData.replaceFields_children ? this.propData.replaceFields_value : 'value' ]==sitemValue){
           newValue.push(item);
         }
         if ( item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ] && item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ].length ) {
-          this.loop(item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ],newValue,sitem)
+          this.loop(item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ],newValue,sitemValue)
         }
       })
     },

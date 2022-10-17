@@ -36,7 +36,7 @@
             >*
           </span>
           <span class="label-content">{{
-            IDM.env_dev ? propData.label : "多行输入框"
+            IDM.env_dev ? propData.label : "富文本"
           }}</span>
         </div>
         <div
@@ -44,42 +44,28 @@
           v-if="propData.defaultStatus != 'readonly'"
           :style="getStyle('content')"
         >
-          <a-textarea
-            :ref="'iinput' + moduleObject.id"
-            :class="{ 'error-state': errorMessage }"
-            :disabled="propData.defaultStatus == 'disabled'"
-            v-model="thisValue"
-            :size="propData.size"
-            :allowClear="propData.clearIcon"
-            :placeholder="propData.placeholder"
-            :autoSize="{minRows: propData.minRows||1, maxRows: propData.maxRows||6}"
-            @blur="blurChange"
-          >
-            <a-tooltip
-              slot="suffix"
-              :title="propData.suffixContent"
-              v-if="propData.suffixContent && propData.suffixType == 'tip'"
-            >
-              <a-icon type="info-circle" style="color: rgba(0, 0, 0, 0.45)" />
-            </a-tooltip>
-            <template
-              slot="suffix"
-              v-else-if="
-                propData.suffixContent && propData.suffixType == 'font'
-              "
-              >{{ propData.suffixContent }}</template
-            >
-            <template slot="prefix" v-if="propData.prefixContent">{{
-              propData.prefixContent
-            }}</template>
-          </a-textarea>
+          <div :class="{ 'error-state': errorMessage }">
+            <vue-tinymce
+              :ref="'irichtext' + moduleObject.id"
+              v-model="thisValue"
+              :setting="{
+                menubar: false,
+                toolbar: 'undo redo | fullscreen | formatselect alignleft aligncenter alignright alignjustify | link unlink | numlist bullist | image media table | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | indent outdent | superscript subscript | removeformat |',
+                toolbar_drawer: 'sliding',
+                quickbars_selection_toolbar: 'removeformat | bold italic underline strikethrough | fontsizeselect forecolor backcolor',
+                plugins: 'link image media table lists fullscreen quickbars',
+                language: 'zh_CN',
+                height: propData.size||200
+              }"
+              @change="blurChange" />
+          </div>
         </div>
         <div
           class="fic-input-box fic-readonly-font"
           v-else
           :style="getStyle('content')"
+          v-html="thisValue"
         >
-          {{ thisValue }}
         </div>
         <div
           class="fic-message-box"
@@ -125,8 +111,9 @@
 </template>
 
 <script>
+
 export default {
-  name: "ITextarea",
+  name: "IRichText",
   data() {
     return {
       errorMessage: "",
@@ -734,6 +721,7 @@ export default {
      */
     blurChange(){
       let selectObject=this.thisValue;
+      
       if(this.propData.blurLinkageDemandPageModule&&this.propData.blurLinkageDemandPageModule.length>0){
         var moduleIdArray = [];
         this.propData.blurLinkageDemandPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
@@ -872,7 +860,7 @@ export default {
       if (!this.verifyInputValue().success) {
         result.type = "error";
         result.message = this.verifyInputValue().message;
-        this.$refs["iinput" + this.moduleObject.id].focus();
+        this.$refs["irichtext" + this.moduleObject.id].focus();
       } else {
         result.data = this.thisValue;
       }

@@ -36,7 +36,7 @@
             >*
           </span>
           <span class="label-content">{{
-            IDM.env_dev ? propData.label : "多行输入框"
+            IDM.env_dev ? propData.label : "标签选择"
           }}</span>
         </div>
         <div
@@ -44,42 +44,21 @@
           v-if="propData.defaultStatus != 'readonly'"
           :style="getStyle('content')"
         >
-          <a-textarea
-            :ref="'iinput' + moduleObject.id"
-            :class="{ 'error-state': errorMessage }"
-            :disabled="propData.defaultStatus == 'disabled'"
-            v-model="thisValue"
-            :size="propData.size"
-            :allowClear="propData.clearIcon"
-            :placeholder="propData.placeholder"
-            :autoSize="{minRows: propData.minRows||1, maxRows: propData.maxRows||6}"
-            @blur="blurChange"
-          >
-            <a-tooltip
-              slot="suffix"
-              :title="propData.suffixContent"
-              v-if="propData.suffixContent && propData.suffixType == 'tip'"
-            >
-              <a-icon type="info-circle" style="color: rgba(0, 0, 0, 0.45)" />
-            </a-tooltip>
-            <template
-              slot="suffix"
-              v-else-if="
-                propData.suffixContent && propData.suffixType == 'font'
-              "
-              >{{ propData.suffixContent }}</template
-            >
-            <template slot="prefix" v-if="propData.prefixContent">{{
-              propData.prefixContent
-            }}</template>
-          </a-textarea>
+          <div :class="{ 'error-state': errorMessage }">
+            <a-tag closable v-for="t in thisValue" :key="t[propData.tagKey]" @close="tagClose(t)">
+              {{t[propData.tagText]}}
+            </a-tag>
+            <a @click="tagSelectHandle">选择</a>
+          </div>
         </div>
         <div
           class="fic-input-box fic-readonly-font"
           v-else
           :style="getStyle('content')"
         >
-          {{ thisValue }}
+          <a-tag v-for="t in thisValue" :key="t[propData.tagKey]">
+            {{t[propData.tagText]}}
+          </a-tag>
         </div>
         <div
           class="fic-message-box"
@@ -125,8 +104,9 @@
 </template>
 
 <script>
+
 export default {
-  name: "ITextarea",
+  name: "ITagsDialogSelect",
   data() {
     return {
       errorMessage: "",
@@ -643,13 +623,40 @@ export default {
      */
     convertAttrToStyleObject() {
       //默认值
-      this.thisValue = this.propData.defaultValue || "";
+      this.thisValue = this.propData.defaultValue || [];
       this.convertAttrToInputDefaultStyle();
       this.convertAttrToInputFoucsStyle();
       this.convertAttrToReadOnlyFontStyle();
       this.convertAttrToLabelFontStyle();
       this.convertAttrToErrorMsgFontStyle();
       this.convertAttrToInputErrorStyle();
+    },
+    /**
+     * 标签选择弹出事件
+     */
+    tagSelectHandle(){
+      let that = this;
+      let urlObject = window.IDM.url.queryObject(),
+        pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
+      var tagSelectCustomFunction = that.propData.tagSelectCustomFunction;
+      tagSelectCustomFunction&&tagSelectCustomFunction.forEach(item=>{
+        window[item.name]&&window[item.name].call(that,{
+          urlData:urlObject,
+          pageId,
+          thisValue:that.thisValue,
+          customParam:item.param,
+          _this:that
+        });
+      })
+    },
+    tagClose(pitem){
+      let currentValue = _.cloneDeep(this.thisValue)||[];
+      currentValue&&currentValue.forEach((item,index)=>{
+        if(item[this.propData.tagKey]==pitem[this.propData.tagKey]){
+          currentValue.splice(index,1);
+        }
+      })
+      this.thisValue = currentValue;
     },
     /**
      * 结果值绑定
@@ -701,7 +708,7 @@ export default {
      * 重置组件的默认值
      */
     resetDefaultValue(object){
-      this.thisValue = this.propData.defaultValue || "";
+      this.thisValue = this.propData.defaultValue || [];
     },
     /**
      * 内容变更事件
@@ -734,6 +741,7 @@ export default {
      */
     blurChange(){
       let selectObject=this.thisValue;
+      
       if(this.propData.blurLinkageDemandPageModule&&this.propData.blurLinkageDemandPageModule.length>0){
         var moduleIdArray = [];
         this.propData.blurLinkageDemandPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
@@ -872,7 +880,7 @@ export default {
       if (!this.verifyInputValue().success) {
         result.type = "error";
         result.message = this.verifyInputValue().message;
-        this.$refs["iinput" + this.moduleObject.id].focus();
+        // this.$refs["irichtext" + this.moduleObject.id].focus();
       } else {
         result.data = this.thisValue;
       }
@@ -898,9 +906,9 @@ export default {
         this.errorMessage = "";
         return result;
       }
-      let thisInputVal = this.thisValue.trim();
+      let thisInputVal = this.thisValue;
       //这里开始判断执行是否需要校验
-      if (this.propData.required && thisInputVal == "") {
+      if (this.propData.required && thisInputVal.length==0) {
         //必填
         result.success = false;
         result.message =
@@ -912,7 +920,7 @@ export default {
         result.success = false;
         result.message =
           this.propData.minLengthText ||
-          this.propData.label + "最小长度为" + this.propData.minLengthNumber;
+          this.propData.label + "最小数量为" + this.propData.minLengthNumber;
       } else if (
         this.propData.maxLength &&
         thisInputVal.length > this.propData.maxLengthNumber
@@ -920,7 +928,7 @@ export default {
         result.success = false;
         result.message =
           this.propData.maxLengthText ||
-          this.propData.label + "最大长度为" + this.propData.maxLengthNumber;
+          this.propData.label + "最大数量为" + this.propData.maxLengthNumber;
       } else if (this.propData.customFun && this.propData.customFunCode) {
         try {
           var fun = IDM.express.eval(this.propData.customFunCode);
@@ -937,7 +945,7 @@ export default {
         let paramObject = {
           urlData:JSON.stringify(urlObject),
           pageId,
-          currentVal:thisInputVal
+          currentVal:JSON.stringify(thisInputVal)
         }
         //接口校验前置条件，执行自定义函数
         let interfaceVerifyPreconditionResult = true;
