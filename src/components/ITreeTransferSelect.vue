@@ -88,16 +88,18 @@
                   <div>
                     <div class="right-selected-box">
                       <draggable
+                        tag="ul" 
                         class="control-center-userdept-select-group"
-                        tag="ul"
+                        chosen-class="control-center-panel-select-ghost"
+                        force-fallback="true" 
+                        animation="300" 
                         v-model="selectedList"
-                        v-bind="dragOptionsUser"
+                        group="userdeptgroup" 
                         @start="userDeptSelectDrag = true"
                         @end="
                           userDeptSelectDrag = false;
                           changePanelSelectOrder();
-                        "
-                      >
+                        ">
                         <transition-group
                           type="transition"
                           :name="!userDeptSelectDrag ? 'flip-list' : null"
@@ -292,14 +294,6 @@ export default {
     };
   },
   computed:{
-    dragOptionsUser() {
-      return {
-        animation: 200,
-        group: "userdeptgroup",
-        disabled: false,
-        ghostClass: "control-center-panel-select-ghost",
-      };
-    }
   },
   props: {},
   created() {

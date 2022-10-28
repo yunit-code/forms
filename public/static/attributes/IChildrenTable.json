@@ -331,6 +331,15 @@
                     "bindKey": "defaultValue",
                     "display":"@[type=='switch']",
                     "default": true
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "选项自定义函数",
+                    "bindKey": "dictionaryFun",
+                    "desc":"自定义控件选项，返回格式为：[{key,label}]",
+                    "display": "@[type!='input'&&type!='switch']",
+                    "multiple": false
                 }
             ]
         },

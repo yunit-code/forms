@@ -87,7 +87,7 @@
                     {{ text?text.map(item=>{return item.label}).join(","):"" }}
                   </template>
                   <template v-else-if="col.type=='radio'||col.type=='select'">
-                    {{ text&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
+                    {{ (text||text===0)&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
                   </template>
                   <template v-else>
                     {{ text }}
@@ -185,15 +185,6 @@
 </template>
 
 <script>
-window.getdictionary=function(){
-  return [{
-              key:"jack",
-              label:"Jack"
-            },{
-              key:"lucy",
-              label:"Lucy"
-            }];
-}
 export default {
   name: "IChildrenTable",
   data() {
@@ -833,6 +824,7 @@ export default {
     convertAttrToStyleObject() {
       //默认值
       this.thisValue = this.propData.defaultValue || [];
+      this.cacheThisValue = _.cloneDeep(this.thisValue);
       this.convertAttrToInputDefaultStyle();
       this.convertAttrToInputFoucsStyle();
       this.convertAttrToReadOnlyFontStyle();
@@ -891,6 +883,7 @@ export default {
      */
     resetDefaultValue(object){
       this.thisValue = this.propData.defaultValue || [];
+      this.cacheThisValue = _.cloneDeep(this.thisValue);
     },
     /**
      * 内容变更事件
@@ -1022,6 +1015,7 @@ export default {
         if(_thisValue){
           this.echoValue = _thisValue;
           this.thisValue = IDM.type(_thisValue)=="string"?JSON.parse(_thisValue):_thisValue;
+          this.cacheThisValue = _.cloneDeep(this.thisValue);
         }
         //取出控件的状态，给propData.defaultStatus赋值,如果为readonly时需要重新readonlyValueSet();
         var stateFiledExp,newState;
