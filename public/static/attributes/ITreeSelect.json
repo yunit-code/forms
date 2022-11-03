@@ -1469,6 +1469,14 @@
                             "desc": "当前选项变更需要联动其他组件变更结果值的组件范围",
                             "bindKey": "linkageResultPageModule",
                             "multiple": true
+                        },
+                        {
+                            "type": "switch",
+                            "layoutType": "block",
+                            "text": "未匹配到值依然联动",
+                            "bindKey": "linkageLastingOpen",
+                            "desc":"当回显的值如果没有匹配到选项值时候是否依然联动给其他组件，这时候联动给其他组件的值就为回显的值了",
+                            "default": false
                         }
                     ]
                 },

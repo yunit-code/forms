@@ -1048,8 +1048,11 @@ export default {
     change(value, option,extra){
       this.verifySelectValue('change')
       let selectObject=this.getSelectedOption(value);
-      if(selectObject==null){
+      if((selectObject==null||(selectObject&&selectObject.length))&&!this.propData.linkageLastingOpen){
         return;
+      }
+      if(this.propData.linkageLastingOpen&&(selectObject==null||(selectObject&&selectObject.length))){
+        selectObject = value;
       }
       if(this.propData.linkageDemandPageModule&&this.propData.linkageDemandPageModule.length>0){
         var moduleIdArray = [];

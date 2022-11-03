@@ -1214,6 +1214,14 @@
                             "multiple": true
                         }
                     ]
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "控件加载完成的动作",
+                    "bindKey": "moduleLoadedFunction",
+                    "desc": "当控件加载完成的时会调用此处设置的方法",
+                    "multiple": true
                 }
             ]
         }

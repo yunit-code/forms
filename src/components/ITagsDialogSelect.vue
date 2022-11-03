@@ -124,7 +124,16 @@ export default {
     // this.propData = testAttr;
     this.convertAttrToStyleObject();
   },
-  mounted() {},
+  mounted() {
+    var moduleLoadedFunction = this.propData.moduleLoadedFunction;
+      moduleLoadedFunction&&moduleLoadedFunction.forEach(item=>{
+        window[item.name]&&window[item.name].call(this,{
+          thisValue:this.thisValue,
+          customParam:item.param,
+          _this:this
+        });
+      })
+  },
   destroyed() {},
   methods: {
     /**

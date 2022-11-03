@@ -682,6 +682,9 @@ export default {
     },
     change(value, option){
       this.verifySelectValue('change')
+      if(option===undefined&&value.target){
+        value = value.target.value;
+      }
       let selectObject={value};
       selectObject = this.optionList.filter(item=>item.value==value);
       if(selectObject&&selectObject.length>0){
@@ -709,13 +712,11 @@ export default {
           triggerType:option===true?'AT':(option?'MT':'OT')
         })
       }
-      if(option&&option!==true){
-        //调用自定义的值改变的函数
-        if(this.propData.changeOptionFunction&&this.propData.changeOptionFunction.length>0){
-          try {
-            window[this.propData.changeOptionFunction[0].name]&&window[this.propData.changeOptionFunction[0].name].call(this,{...this.propData.changeOptionFunction[0].param,moduleObject:this.moduleObject,thisValue:this.thisValue,optionList:this.optionList});
-          } catch (error) {
-          }
+      //调用自定义的值改变的函数
+      if(this.propData.changeOptionFunction&&this.propData.changeOptionFunction.length>0){
+        try {
+          window[this.propData.changeOptionFunction[0].name]&&window[this.propData.changeOptionFunction[0].name].call(this,{...this.propData.changeOptionFunction[0].param,moduleObject:this.moduleObject,thisValue:this.thisValue,optionList:this.optionList});
+        } catch (error) {
         }
       }
     },
@@ -833,7 +834,7 @@ export default {
         if(_thisValue){
           this.echoValue = _thisValue;
           this.thisValue = _thisValue;
-          this.change(this.thisValue)
+          this.change(this.thisValue,false)
         }
         //取出控件的状态，给propData.defaultStatus赋值,如果为readonly时需要重新readonlyValueSet();
         var stateFiledExp,newState;
