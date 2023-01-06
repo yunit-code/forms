@@ -69,7 +69,7 @@ export default {
     return {
       errorMessage:"",
       //非只读情况下的值，下拉框是value，所以跟只读的不一样，这里可能会被回显值覆盖一次，如果回显有值了就不会取optionList的默认值了
-      thisValue:this.$root.propData.selectMode=='default'?'':[],
+      thisValue:this.$root.propData.selectMode=='default'?undefined:[],
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{},
       optionList:[],
@@ -721,7 +721,7 @@ export default {
      */
     convertAttrToStyleObject(){
       //默认值
-      this.thisValue = this.propData.selectMode=='default'?(this.propData.defaultValue||''):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
+      this.thisValue = this.propData.selectMode=='default'?(this.propData.defaultValue||undefined):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
       this.convertAttrToReadOnlyFontStyle();
       this.convertAttrToLabelFontStyle();
       this.convertAttrToErrorMsgFontStyle();
@@ -903,7 +903,7 @@ export default {
             }
         })
       }
-      var defaultValue=this.propData.selectMode=='default'?(this.propData.defaultValue||''):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
+      var defaultValue=this.propData.selectMode=='default'?(this.propData.defaultValue||undefined):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
       this.optionList.forEach(item=>{
         if(item.check){
           if(this.propData.selectMode=='default'){
@@ -917,7 +917,7 @@ export default {
         this.thisValue = defaultValue;
       }
       //触发变动事件
-      if(this.thisValue!=''&&this.thisValue!=[]){
+      if(this.thisValue!=undefined&&this.thisValue!=[]){
         this.change(this.thisValue,true)
       }
       //只读情况下调用只读显示值
@@ -927,7 +927,7 @@ export default {
       }
 
       //发现为空就不做任何后续修改值操作
-      if(this.thisValue==""||(this.thisValue instanceof Array&&this.thisValue.length==0)){
+      if(this.thisValue==undefined||(this.thisValue instanceof Array&&this.thisValue.length==0)){
         return;
       }
       //选项值重新绑定，value值要重新刷新
@@ -936,7 +936,7 @@ export default {
         let hasExists = this.optionList.filter(item=>item.value==this.thisValue);
         if(!(hasExists&&hasExists.length>0)){
           if(this.echoValue==null){
-            this.thisValue = "";
+            this.thisValue = undefined;
           }
         }
       }else if(this.thisValue instanceof Array){
@@ -979,7 +979,7 @@ export default {
               if (res.data.code == 200) {
                 that.thisValue = res.data.data;
               } else {
-                that.thisValue = that.propData.selectMode=='default'?'':[];
+                that.thisValue = that.propData.selectMode=='default'?undefined:[];
               }
             })
           break;
@@ -993,7 +993,7 @@ export default {
           break;
         case "customFun":
           if(this.propData.resFunction&&this.propData.resFunction.length>0){
-            var resValue = this.propData.selectMode=='default'?'':[];
+            var resValue = this.propData.selectMode=='default'?undefined:[];
             try {
               resValue = window[this.propData.resFunction[0].name]&&window[this.propData.resFunction[0].name].call(this,{...this.propData.resFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
             } catch (error) {
@@ -1079,7 +1079,7 @@ export default {
      * 重置组件的默认值
      */
     resetDefaultValue(object){
-      var defaultValue=this.propData.selectMode=='default'?(this.propData.defaultValue||''):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
+      var defaultValue=this.propData.selectMode=='default'?(this.propData.defaultValue||undefined):(this.propData.defaultValue?[this.propData.defaultValue]:[]);
       this.optionList.forEach(item=>{
         if(item.check){
           if(this.propData.selectMode=='default'){
@@ -1251,7 +1251,7 @@ export default {
         this.errorMessage = "";
         return result;
       }
-      let thisSelectVal = this.thisValue||(this.propData.selectMode=='default'?'':[]);
+      let thisSelectVal = this.thisValue||(this.propData.selectMode=='default'?undefined:[]);
       // console.log("🚀 ~ file: ISelect.vue ~ line 793 ~ verifySelectValue ~ thisSelectVal", thisSelectVal)
       //这里开始判断执行是否需要校验
       if(this.propData.required&&thisSelectVal.length==0){
