@@ -974,7 +974,9 @@ export default {
       //选项值重新绑定，value值要重新刷新
       if(!this.propData.isMultiple){
         //单选
-        let hasExists = this.optionList.filter(item=>item.value==this.thisValue);
+        // let hasExists = this.optionList.filter(item=>item.value==this.thisValue);
+        let hasExists = [];
+        this.getCheckedItem(this.thisValue,this.optionList,hasExists)
         if(!(hasExists&&hasExists.length>0)){
           if(this.echoValue==null){
             //这里要根据是否选择了labelInValue为true，包括其他地方设置为字符串的也是一样
@@ -1002,6 +1004,17 @@ export default {
         this.echoAfterValue = null;
       }
       this.echoValue = null;
+    },
+    getCheckedItem(value,data,result) {
+      for( let i = 0,maxi = data.length;i < maxi;i++ ) {
+        if ( data[i][this.propData.replaceFields_value ? this.propData.replaceFields_value : 'value'] == value) {
+          result.push(data[i]) 
+          return
+        }
+        if ( data[i][this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children'] ) {
+          this.getCheckedItem(value,data[i][this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children'],result)
+        }
+      }
     },
     /**
      * 联动结果值绑定

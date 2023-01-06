@@ -703,7 +703,7 @@ export default {
         // url: IDM.url.getWebPath(resultData.filePath),
       }
       that.thisValue.push(newObject);
-      IDM.http.upload(this.propData.uploadUrl,file.file,{"type":"forms_uploadimage_ctrl"}).then(res=>{
+      IDM.http.upload(this.propData.uploadUrl,file.file,{"type":"forms_uploadimage_ctrl",...IDM.setting.webRoot}).then(res=>{
         var resultData = res.data.data;
         /**
          * 返回结果：
