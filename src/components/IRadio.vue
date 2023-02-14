@@ -38,7 +38,7 @@
         <div class="fic-message-box" v-html="propData.descContent" v-if="propData.gridLayout=='6:12'&&propData.descPosition=='horizontal'&&propData.defaultStatus!='readonly'">
         </div>
       </div>
-      <div class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
+      <div v-if="propData.openCheck" class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
         <div class="fic-label-box" :style="getStyle('label')" v-if="(propData.labelDisplay||propData.labelDisplay==undefined)&&(propData.labelLayout=='horizontal'||propData.labelLayout==undefined)">
         </div>
         <div class="fic-select-box" :style="getStyle('content')">
@@ -83,6 +83,36 @@ export default {
   },
   destroyed() {},
   methods:{
+    convertAttrToStyleObjectItem() {
+      var styleObject = {};
+      for (const key in this.propData) {
+        if (this.propData.hasOwnProperty.call(this.propData, key)) {
+          const element = this.propData[key];
+          if(!element&&element!==false&&element!=0){
+            continue;
+          }
+          switch (key) {
+            case "maxWidthItem":
+              if(this.propData.maxWidthItem && this.propData.maxWidthItem.inputVal&&this.propData.maxWidthItem.selectVal){
+                styleObject["max-width"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+              }
+              break;
+            case "minWidth":
+              if(this.propData.maxWidthItem && this.propData.maxWidthItem.inputVal&&this.propData.maxWidthItem.selectVal){
+                styleObject["min-width"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+              }
+              break;
+            case "rightPaddingNumber":
+              if(this.propData.maxWidthItem&&this.propData.maxWidthItem.selectVal){
+                styleObject["margin-right"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+              }
+              break;
+          }
+        }
+      }
+      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-group",styleObject);
+      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-button-wrapper",styleObject);
+    },
     /**
      * 把属性转换成错误消息的文字样式
      */
@@ -425,6 +455,7 @@ export default {
       this.convertAttrToReadOnlyFontStyle();
       this.convertAttrToLabelFontStyle();
       this.convertAttrToErrorMsgFontStyle();
+      this.convertAttrToStyleObjectItem()
       if(this.propData.defaultStatus!='disabled'){
         this.convertAttrToRadioDefaultStyle();
         this.convertAttrToRadioFoucsStyle();
