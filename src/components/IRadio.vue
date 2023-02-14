@@ -94,23 +94,23 @@ export default {
           switch (key) {
             case "maxWidthItem":
               if(this.propData.maxWidthItem && this.propData.maxWidthItem.inputVal&&this.propData.maxWidthItem.selectVal){
-                styleObject["max-width"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+                styleObject["max-width"] = this.propData.maxWidthItem.inputVal+this.propData.maxWidthItem.selectVal;
               }
               break;
-            case "minWidth":
-              if(this.propData.maxWidthItem && this.propData.maxWidthItem.inputVal&&this.propData.maxWidthItem.selectVal){
-                styleObject["min-width"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+            case "minWidthItem":
+              if(this.propData.minWidthItem&&this.propData.minWidthItem.selectVal){
+                styleObject["min-width"] = this.propData.minWidthItem.inputVal+this.propData.minWidthItem.selectVal;
               }
               break;
-            case "rightPaddingNumber":
-              if(this.propData.maxWidthItem&&this.propData.maxWidthItem.selectVal){
-                styleObject["margin-right"] = this.propData.maxWidth.inputVal+this.propData.maxWidth.selectVal;
+            case "rightMarginItem":
+              if(this.propData.rightMarginItem&&this.propData.rightMarginItem.selectVal){
+                styleObject["margin-right"] = this.propData.rightMarginItem.inputVal+this.propData.rightMarginItem.selectVal;
               }
               break;
           }
         }
       }
-      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-group",styleObject);
+      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-wrapper",styleObject);
       window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-button-wrapper",styleObject);
     },
     /**
@@ -223,46 +223,21 @@ export default {
               }
               break;
             case "contentEditFont":
-              styleObject_f["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject_f["color"] = element.fontColors.hex8;
-              }
-              styleObject_f["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject_f["font-style"] = element.fontStyle;
-              styleObject_f["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject_f["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject_f["text-align"] = element.fontTextAlign;
-              styleObject_f["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject_f,element)
               break;
           }
         }
       }
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-inner",
-        styleObject
-      );
       if(styleObject["border-color"]){
-        window.IDM.setStyleToPageHead(
-          this.moduleObject.id + " .ant-radio-button-wrapper:not(:first-child):before",
+        window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-button-wrapper:not(:first-child):before",
           {
             "background-color":styleObject["border-color"]
           }
         );
       }
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-button-wrapper",
-        {...styleObject,...styleObject_f}
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-wrapper",
-        styleObject_f
-      );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-inner", styleObject );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-button-wrapper", {...styleObject,...styleObject_f} );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-wrapper", styleObject_f );
       //其他内容元素
     },
     
@@ -1083,4 +1058,9 @@ export default {
 </script>
 <style lang="scss">
 @import "../style/formsCommon.scss";
+</style>
+<style lang="scss" scoped>
+.ant-radio-group{
+  width: 100%;
+}
 </style>
