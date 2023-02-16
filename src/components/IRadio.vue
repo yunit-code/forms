@@ -107,6 +107,9 @@ export default {
                 styleObject["margin-right"] = this.propData.rightMarginItem.inputVal+this.propData.rightMarginItem.selectVal;
               }
               break;
+            case "boxItem":
+              IDM.style.setBoxStyle(styleObject,element)
+              break;
           }
         }
       }
@@ -425,6 +428,7 @@ export default {
      * 把属性转换成样式对象
      */
     convertAttrToStyleObject(){
+      let styleObject = {};
       //默认值
       this.thisValue = this.propData.defaultValue||'';
       this.convertAttrToReadOnlyFontStyle();
@@ -436,6 +440,25 @@ export default {
         this.convertAttrToRadioFoucsStyle();
       }
       this.convertAttrToRadioErrorStyle();
+      for (const key in this.propData) {
+        if (this.propData.hasOwnProperty.call(this.propData, key)) {
+          const element = this.propData[key];
+          if (!element && element !== false) {
+            continue;
+          }
+          switch (key) {
+            case 'bgColor':
+              if (element && element.hex8) {
+                styleObject['background-color'] = IDM.hex8ToRgbaString(element.hex8);
+              }
+              break;
+            case "box":
+              IDM.style.setBoxStyle(styleObject,element)
+              break;
+          }
+        }
+      }
+      window.IDM.setStyleToPageHead(this.moduleObject.id, styleObject);
       //选项绑定（静态数据、数据接口、自定义函数、接收其他组件传值【参数、结果集】（结果集的话需要支持自定义显示字段、参数的话需要把整个内容传递到自定义接口中））
       this.optionBind();
       //结果联动（无、接收其他组件传值【显示字段、自定义渲染函数】）【其他组件也通用的】
