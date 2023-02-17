@@ -81,6 +81,32 @@
                       {{oitem.label}}
                     </a-radio>
                   </a-radio-group>
+                  <a-tree-select v-else-if="col.type=='treeSelect'" 
+                    v-model="record[col.dataIndex]"
+                    :show-search="col.isMultiple?true:(col.showSearch||false)"
+                    :tree-checkable="col.treeCheckable||false"
+                    :multiple="col.isMultiple||false"
+                    style="min-width: 100%"
+                    :size="propData.size" 
+                    :allowClear="true" 
+                    :show-checked-strategy="TreeSelect[col.showCheckedStrategy||'SHOW_CHILD']"
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                    :tree-data="col.dictionary"
+                    :treeDataSimpleMode="col.optionType=='static'||col.openSyncOption?true:(col.treeDataSimpleMode||false)"
+                    :labelInValue="col.labelInValue||false"
+                    :tree-default-expand-all="false"
+                    :treeCheckStrictly="col.treeCheckStrictly===true"
+                    :treeNodeFilterProp="col.treeNodeFilterProp||'value'"
+                    :treeNodeLabelProp="col.treeNodeLabelProp||'title'"
+                    :loadData="(treeNode)=>{return loadData(treeNode,col)}"
+                    :replaceFields="{
+                      children:col.replaceFields_children||'children', 
+                      title:col.replaceFields_title||'title', 
+                      key:col.replaceFields_key||'key', 
+                      value: col.replaceFields_value||'value' 
+                    }"
+                  >
+                  </a-tree-select>
                 </template>
                 <template v-else>
                   <template v-if="col.type=='mSelect'">
@@ -88,6 +114,11 @@
                   </template>
                   <template v-else-if="col.type=='radio'||col.type=='select'">
                     {{ (text||text===0)&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
+                  </template>
+                  <template v-else-if="col.type=='treeSelect'">
+                    <a-tag v-for="ritem in record[col.dataIndex]" :key="ritem.value">
+                      {{ritem.label}}
+                    </a-tag>
                   </template>
                   <template v-else>
                     {{ text }}
@@ -133,6 +164,11 @@
                   </template>
                   <template v-else-if="col.type=='radio'||col.type=='select'">
                     {{ text&&col.dictionary?col.dictionary.filter(item=>item.key==text)[0].label:"" }}
+                  </template>
+                  <template v-else-if="col.type=='treeSelect'">
+                    <a-tag v-for="ritem in record[col.dataIndex]" :key="ritem.value">
+                      {{ritem.label}}
+                    </a-tag>
                   </template>
                   <template v-else>
                     {{ text }}
@@ -251,6 +287,10 @@ export default {
             _this:this
           });
         }
+        if(item.type=="treeSelect"){
+          item.dictionary = [];
+          this.optionBind(item)
+        }
       })
       this.allColumns = tableColumns;
       this.allColumns.push({
@@ -275,7 +315,9 @@ export default {
       this.editingKey = idm_datakey;
       let pushObj = {idm_datakey,editable:true};
       this.allColumns.forEach(item=>{
+        if(item.type!="treeSelect"){
           pushObj[item.dataIndex] = item.defaultValue;
+        }
       })
       if(!index&&index!==0){
         this.thisValue.push(pushObj);
@@ -1035,6 +1077,12 @@ export default {
         if(newState){
           this.propData.defaultStatus = newState;
         }
+      }else{
+        this.allColumns.forEach(item=>{
+          if(item.pageInterfaceResultDataName==object.key){
+            this.optionBind(item,object.data)
+          }
+        })
       }
     },
     /**
@@ -1246,6 +1294,186 @@ export default {
       }
       return styles;
     },
+    /**
+     * 异步加载数据
+     */
+    loadData(treeNode,colData){
+      let that = this;
+      let itemPropData = this.allColumns.filter(item=>item.dataIndex==colData.dataIndex);
+      if(itemPropData&&itemPropData.length){
+        itemPropData = itemPropData[0];
+      }
+      if(!itemPropData.openSyncOption||!itemPropData.asyncInterfaceUrl){
+        return null;
+      }
+      return new Promise((resolve,reject) => {
+        // const { id } = treeNode.dataRef;
+        let param = {}
+        if(itemPropData.requestParamFormatFunction&&itemPropData.requestParamFormatFunction.length>0){
+          window[itemPropData.requestParamFormatFunction[0].name]&&window[itemPropData.requestParamFormatFunction[0].name].call(this,
+          {...itemPropData.requestParamFormatFunction[0].param,moduleObject:that.moduleObject,treeNode:treeNode.dataRef,param})
+        }
+        window.IDM.http.get(itemPropData.asyncInterfaceUrl, param).then((res) => {
+            if (res.data.code == 200) {
+              that.optionListHandle(res.data,itemPropData,"asyncResultValField",true);
+              // that.optionList = res.data.data instanceof Array?res.data.data:[];
+            } else {
+              
+            }
+            resolve();
+          }).catch(error=>{
+            reject(error);
+          })
+      });
+    },
+    /**
+     * 选项绑定
+     */
+    optionBind(itemPropData,byValData){
+      let that = this;
+      switch (itemPropData.optionType) {
+        case "interface":
+          //获取所有的URL参数、页面ID（pageId）、以及所有组件的返回值（用范围值去调用IDM提供的方法取出所有的组件值）
+          let urlObject = window.IDM.url.queryObject(),
+          pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
+          itemPropData.optionInterfaceUrl&&window.IDM.http.get(itemPropData.optionInterfaceUrl, {
+            urlData:JSON.stringify(urlObject),
+            pageId
+          }).then((res) => {
+            if (res.data.code == 200) {
+              that.optionListHandle(res.data,itemPropData);
+            } else {
+              itemPropData.dictionary = [];
+            }
+            that.optionBindAfter();
+          })
+          break;
+        case "customFun":
+          if(itemPropData.optionFunction&&itemPropData.optionFunction.length>0){
+            var optionList = [];
+            try {
+              optionList = window[itemPropData.optionFunction[0].name]&&window[itemPropData.optionFunction[0].name].call(this,{...itemPropData.optionFunction[0].param,moduleObject:this.moduleObject});
+            } catch (error) {
+            }
+            that.optionListHandle(optionList,itemPropData);
+          }else{
+            itemPropData.dictionary = [];
+          }
+          this.optionBindAfter();
+          break;
+        case "byval":
+          if(byValData){
+            switch (itemPropData.byValType) {
+              case "resultVal"://直接使用结果
+                that.optionListHandle(byValData,itemPropData);
+                this.optionBindAfter();
+                break;
+              case "interfaceParam"://作为接口参数
+                let urlObject = window.IDM.url.queryObject(),
+                pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
+                let paramObject = {
+                  urlData:JSON.stringify(urlObject),
+                  pageId
+                }
+                let newByValData = JSON.stringify(byValData);
+                if(itemPropData.byValInterfaceParamValueRule){
+                  newByValData = IDM.express.replace("@["+itemPropData.byValInterfaceParamValueRule+"]",byValData);
+                }
+                paramObject[itemPropData.byValInterfaceParam] = newByValData;
+                itemPropData.byValInterfaceUrl&&window.IDM.http.get(itemPropData.byValInterfaceUrl, paramObject).then((res) => {
+                  if (res.data.code == 200) {
+                    that.optionListHandle(res.data,itemPropData);
+                  } else {
+                    itemPropData.dictionary = [];
+                  }
+                  that.optionBindAfter();
+                })
+                break;
+              case "customFun"://自定义函数
+                if(itemPropData.byValFunction&&itemPropData.byValFunction.length>0){
+                  var optionList = [];
+                  try {
+                    optionList = window[itemPropData.byValFunction[0].name]&&window[itemPropData.byValFunction[0].name].call(this,{...itemPropData.byValFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
+                  } catch (error) {
+                  }
+                  this.optionListHandle(optionList,itemPropData);
+                }else{
+                  itemPropData.dictionary = [];
+                }
+                this.optionBindAfter();
+                break;
+            }
+          }
+          break;
+          case "pageInterfaceResult":
+            that.optionListHandle(byValData,itemPropData);
+            this.optionBindAfter();
+          break;
+      }
+    },
+    /**
+     * 选项处理函数
+     * 先进行显示字段转换，然后再进行text、value转换，把最后的转换结果赋值给this.optionList
+     */
+    optionListHandle(resultData,itemPropData,byValResultValField,async){
+      if(!resultData){
+        return;
+      }
+      let newList = resultData.data||(resultData instanceof Array?resultData:[]);
+      if(itemPropData[byValResultValField||'byValResultValField']){
+        //给defaultValue设置dataFiled的值
+        var filedExp = itemPropData[byValResultValField||'byValResultValField'],dataName="resultData";
+        filedExp =
+          dataName +
+          (filedExp.startsWiths("[") ? "" : ".") +
+          filedExp;
+        var dataObject = { IDM: window.IDM };
+        dataObject[dataName] = resultData;
+        newList = window.IDM.express.replace.call(
+          this,
+          "@[" + filedExp + "]",
+          dataObject
+        );
+      }
+      if(itemPropData.resultFormatFunction&&itemPropData.resultFormatFunction.length>0){
+        itemPropData.resultFormatFunction.forEach(item=>{
+          try {
+            //这里要根据判断进行递归的
+            newList = window[item.name]&&window[item.name].call(this,{...item.param,moduleObject:this.moduleObject,optionList:newList,async});
+          } catch (error) {
+          }
+        })
+      }
+      if(async){
+        let allMapIds = newList.map(item=>item.id);
+        if(!itemPropData.dictionary.filter(item=>allMapIds.includes(item.id)).length){
+          itemPropData.dictionary = itemPropData.dictionary.concat(newList);
+        }
+      }else{
+        itemPropData.dictionary = newList;
+      }
+    },
+    //递归处理选中的
+    getCheckDefaultValue(dataList,defaultValue){
+      dataList.forEach(item=>{
+        if(item.check){
+          if(!this.propData.isMultiple){
+            defaultValue=item.value;
+          }else{
+            defaultValue.push(item.value);
+          }
+        }
+        //这里要根据判断进行递归的
+        if(item&&item[this.propData.replaceFields_children||'children']&&item[this.propData.replaceFields_children||'children'].length>0){
+          this.getCheckDefaultValue(item[this.propData.replaceFields_children||'children'],defaultValue)
+        }
+      })
+    },
+    /**
+     * 选项绑定之后执行的操作
+     */
+    optionBindAfter(itemPropData){
+    }
   },
   watch: {
     thisValue: {

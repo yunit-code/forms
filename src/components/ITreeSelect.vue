@@ -1060,7 +1060,12 @@ export default {
     },
     change(value, option,extra){
       this.verifySelectValue('change')
-      let selectObject=this.getSelectedOption(value);
+      let selectObject=null;
+      try{
+        selectObject = this.getSelectedOption(value);
+      }catch(err){
+        
+      }
       if((selectObject==null||(selectObject&&selectObject.length))&&!this.propData.linkageLastingOpen){
         return;
       }

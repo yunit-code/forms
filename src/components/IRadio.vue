@@ -447,6 +447,15 @@ export default {
       switch (this.propData.optionType) {
         case "static":
           this.optionList = this.propData.optionStaticList||[];
+          this.optionList.forEach(item=>{
+            if(item.valueType=="number"){
+              try {
+                item.value = parseFloat(item.value);
+              } catch (error) {
+                
+              }
+            }
+          })
           this.optionBindAfter();
           break;
         case "interface":
@@ -833,7 +842,7 @@ export default {
           filedExp = this.propData.echoDataName+(filedExp.startsWiths("[")?"":".")+filedExp;
           _thisValue = window.IDM.express.replace.call(this, "@["+filedExp+"]", dataObject);
         }
-        if(_thisValue){
+        if(_thisValue||_thisValue===0){
           this.echoValue = _thisValue;
           this.thisValue = _thisValue;
           this.change(this.thisValue,false)
@@ -906,7 +915,7 @@ export default {
         this.errorMessage = "";
         return result;
       }
-      let thisSelectVal = this.thisValue||'';
+      let thisSelectVal = this.thisValue||this.thisValue===0?this.thisValue:'';
       // console.log("🚀 ~ file: ISelect.vue ~ line 793 ~ verifySelectValue ~ thisSelectVal", thisSelectVal)
       //这里开始判断执行是否需要校验
       if(this.propData.required&&thisSelectVal.length==0){

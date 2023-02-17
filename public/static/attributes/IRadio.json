@@ -711,6 +711,24 @@
                             "placeholder": "请输入"
                         },
                         {
+                            "type": "select",
+                            "layoutType": "inline",
+                            "text": "值类型",
+                            "bindKey": "valueType",
+                            "desc": "设置“选项值”的类型，如果为数字，则会强制把“选项值”转换为number类型",
+                            "dictionary": [
+                                {
+                                    "label": "数字",
+                                    "value": "number"
+                                },
+                                {
+                                    "label": "字符串",
+                                    "value": "string"
+                                }
+                            ],
+                            "default": "string"
+                        },
+                        {
                             "type": "switch",
                             "layoutType": "inline",
                             "text": "默认选中",

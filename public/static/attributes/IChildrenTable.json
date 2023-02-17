@@ -312,6 +312,10 @@
                         {
                             "label": "开关",
                             "value": "switch"
+                        },
+                        {
+                            "label": "树选择框",
+                            "value": "treeSelect"
                         }
                     ],
                     "default": "input"
@@ -338,8 +342,301 @@
                     "text": "选项自定义函数",
                     "bindKey": "dictionaryFun",
                     "desc":"自定义控件选项，返回格式为：[{key,label}]",
-                    "display": "@[type!='input'&&type!='switch']",
+                    "display": "@[type!='input'&&type!='switch'&&type!='treeSelect']",
                     "multiple": false
+                },
+
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "复选框",
+                    "bindKey": "treeCheckable",
+                    "desc":"当设置为 true 时树结构title前多一项复选框且 多选模式 自动开启为多选",
+                    "display":"@[type=='treeSelect']",
+                    "default":false
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "多选模式",
+                    "bindKey": "isMultiple",
+                    "desc":"当设置 treeCheckable 时自动变为 true",
+                    "display":"@[type=='treeSelect']",
+                    "default":false
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "显示搜索",
+                    "bindKey": "showSearch",
+                    "default":false,
+                    "display":"@[type=='treeSelect'&&!isMultiple]"
+                },
+                {
+                    "type": "radio",
+                    "layoutType": "inline",
+                    "text": "回填方式",
+                    "bindKey": "showCheckedStrategy",
+                    "desc":"定义选中项回填的方式。所有选中节点:包括父节点； 只显示父节点：当父节点下所有子节点都选中时",
+                    "dictionary": [
+                        {
+                            "label": "只显示子节点",
+                            "value": "SHOW_CHILD"
+                        },
+                        {
+                            "label": "只显示父节点",
+                            "value": "SHOW_PARENT"
+                        },
+                        {
+                            "label": "所有选中节点",
+                            "value": "SHOW_ALL"
+                        }
+                    ],
+                    "styleType":"radio",
+                    "display":"@[type=='treeSelect']",
+                    "default": "SHOW_CHILD"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "取消关联",
+                    "bindKey": "treeCheckStrictly",
+                    "desc":"checkable 状态下节点选择完全受控（父子节点选中状态不再关联），会使得 value模式(labelInValue) 强制为 true",
+                    "default":false,
+                    "display":"@[type=='treeSelect']"
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "value模式",
+                    "desc":"设置是否把每个选项的 label 包装到 value 中，会把 value 类型从 string 变为 {value: string, label: string} 的格式，是否开启建议根据接口保存所用到的格式选择",
+                    "bindKey": "labelInValue",
+                    "display":"@[type=='treeSelect']",
+                    "default": false
+                },
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "数据来源",
+                    "bindKey": "optionType",
+                    "dictionary": [
+                        {
+                            "label": "数据接口",
+                            "value": "interface"
+                        },
+                        {
+                            "label": "自定义函数",
+                            "value": "customFun"
+                        },
+                        {
+                            "label": "接收其他组件传值",
+                            "value": "byval"
+                        },
+                        {
+                            "label": "页面接口的结果集",
+                            "value": "pageInterfaceResult"
+                        }
+                    ],
+                    "display":"@[type=='treeSelect']",
+                    "default": "interface"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "接口地址",
+                    "bindKey": "optionInterfaceUrl",
+                    "desc": "请按照统一标准的返回格式返回数组格式的数据，格式如下：{\"code\":\"200\",\"data\":[{children:[{}]}],...}",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&optionType=='interface']"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "自定义函数",
+                    "bindKey": "optionFunction",
+                    "desc": "获取选项数据源的时候会调用此方法，返回数据格式如下：[{children:[{}]}]",
+                    "display": "@[type=='treeSelect'&&optionType=='customFun']",
+                    "multiple": false
+                },
+                {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "值类型",
+                    "bindKey": "byValType",
+                    "desc": "选择接收其他组件传值后要执行的后续动作，也就是选择接收到的值的作用是什么，处理完后返回选项所需要的结果",
+                    "dictionary": [
+                        {
+                            "label": "直接使用结果",
+                            "value": "resultVal"
+                        },
+                        {
+                            "label": "作为接口参数",
+                            "value": "interfaceParam"
+                        },
+                        {
+                            "label": "自定义函数",
+                            "value": "customFun"
+                        }
+                    ],
+                    "default": "resultVal",
+                    "display": "@[type=='treeSelect'&&optionType=='byval']"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "参数名称",
+                    "bindKey": "byValInterfaceParam",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&optionType=='byval'&&byValType=='interfaceParam']"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "取值规则",
+                    "bindKey": "byValInterfaceParamValueRule",
+                    "default": "",
+                    "desc":"用于设置接收的其他组件传值所需要过滤的字段，比如传值过来是一个对象{a:1,b:2}，而参数只需要b的值2即可，所以这里可以填写b，支持表达式，如果不填则是整个作为字符串传递到后端接口",
+                    "display": "@[type=='treeSelect'&&optionType=='byval'&&byValType=='interfaceParam']"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "接口地址",
+                    "bindKey": "byValInterfaceUrl",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&optionType=='byval'&&byValType=='interfaceParam']"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "自定义函数",
+                    "bindKey": "byValFunction",
+                    "desc": "其他组件传值后会把值传递到此方法并且调用，函数返回数据格式如下：[{children:[{}]}]",
+                    "display": "@[type=='treeSelect'&&optionType=='byval'&&byValType=='customFun']",
+                    "multiple": false
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "结果集名",
+                    "bindKey": "pageInterfaceResultDataName",
+                    "desc": "页面接口设定的结果集名称，位置为：页面设置》高级设置》页面接口",
+                    "default": "",
+                    "placeholder": "示例：resultData",
+                    "display": "@[type=='treeSelect'&&optionType=='pageInterfaceResult']"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "显示结果",
+                    "bindKey": "byValResultValField",
+                    "desc": "根据结果值的数据格式指定结果集的字段，比如结果值为{data:[{text:'显示值',value:'选项值'}]}，则这里应该填写data，如果不填写则直接使用结果值",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&optionType!='static']"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "显示结果格式化自定义函数",
+                    "bindKey": "resultFormatFunction",
+                    "desc": "对显示结果取到的数据进行再次格式化，以返回控件所需要展示成理想结果的数据",
+                    "display": "@[type=='treeSelect'&&optionType!='static']",
+                    "multiple": false
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "简单格式",
+                    "desc":"使用简单格式的 treeData，具体设置参考可设置的类型 (此时 treeData 应变为这样的数据结构: [{id:1, pId:0, value:'1', label:\"test1\",...},...], pId 是父节点的 id)，注意：静态数据直接强制为true，其他请根据返回结果进行选择",
+                    "bindKey": "treeDataSimpleMode",
+                    "display": "@[type=='treeSelect']",
+                    "default": false
+                },
+                {
+                    "type": "group",
+                    "text": "属性转换设置",
+                    "desc": "点击？查看属性转换设置用法指南",
+                    "display": "@[type=='treeSelect']",
+                    "children": [
+                        {
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "过滤KEY",
+                            "bindKey": "treeNodeFilterProp",
+                            "desc":"输入项过滤对应的 treeNode 属性key",
+                            "placeholder": "示例：value"
+                        },{
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "显示KEY",
+                            "bindKey": "treeNodeLabelProp",
+                            "desc":"作为显示的时候设置显示 treeNode 属性key",
+                            "placeholder": "示例：title"
+                        },{
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "children",
+                            "bindKey": "replaceFields_children",
+                            "desc":"非简单格式下对应的子节点key",
+                            "placeholder": "示例：children"
+                        },{
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "title",
+                            "bindKey": "replaceFields_title",
+                            "desc":"非简单格式下对应的显示值",
+                            "placeholder": "示例：title"
+                        },{
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "key",
+                            "bindKey": "replaceFields_key",
+                            "desc":"非简单格式下对应的ID值，数据唯一的",
+                            "placeholder": "示例：key"
+                        },{
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "value",
+                            "bindKey": "replaceFields_value",
+                            "desc":"非简单格式下对应的value值",
+                            "placeholder": "示例：value"
+                        }
+                    ]
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "异步加载",
+                    "desc":"开启后则将会使用异步加载，在配置异步加载之前请先配置首次加载的数据接口，开启后将强制把数据格式变为简单格式，并且返回结构必须带isLeaf",
+                    "bindKey": "openSyncOption",
+                    "display": "@[type=='treeSelect']",
+                    "default": false
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "接口地址",
+                    "bindKey": "asyncInterfaceUrl",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&openSyncOption]"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "请求参数格式化自定义函数",
+                    "bindKey": "requestParamFormatFunction",
+                    "desc": "对要请求的参数进行格式化处理，接收参数{...自定义,treeNode：当前节点信息,param:{这里才是最终要请求的参数，给此对象赋值即可}}",
+                    "display": "@[type=='treeSelect'&&openSyncOption]",
+                    "multiple": false
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "显示结果",
+                    "bindKey": "asyncResultValField",
+                    "desc": "根据结果值的数据格式指定结果集的字段，比如结果值为{data:[{text:'显示值',value:'选项值'}]}，则这里应该填写data，如果不填写则直接使用结果值",
+                    "default": "",
+                    "display": "@[type=='treeSelect'&&openSyncOption]"
                 }
             ]
         },
