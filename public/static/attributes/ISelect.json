@@ -1419,6 +1419,14 @@
                     "multiple": false
                 },
                 {
+                  "type": "switch",
+                  "layoutType": "inline",
+                  "text": "首次触发",
+                  "bindKey": "needDefaultChange",
+                  "desc": "选项绑定后是否触发【值发生变化时的动作】",
+                  "default": false
+                },
+                {
                     "type": "actionSelect",
                     "layoutType": "block",
                     "text": "值发生变化时的动作",

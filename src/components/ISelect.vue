@@ -918,7 +918,7 @@ export default {
       }
       //触发变动事件
       if(this.thisValue!=undefined&&this.thisValue!=[]){
-        this.change(this.thisValue,true)
+        this.change(this.thisValue, !this.propData.needDefaultChange)
       }
       //只读情况下调用只读显示值
       if(this.propData.defaultStatus=="readonly"){
