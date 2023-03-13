@@ -285,9 +285,18 @@
                 {
                     "type": "switch",
                     "layoutType": "inline",
+                    "text": "开启校验",
+                    "desc":"是否开启校验功能",
+                    "bindKey": "openCheck",
+                    "default": true
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
                     "text": "校验占位",
                     "desc":"是否预留校验信息空间，开启将会在底部占用25px空白预留给校验信息使用",
                     "bindKey": "retainBottomHeight",
+                    "display":"@[openCheck]",
                     "default": true
                 }
             ]
@@ -296,6 +305,7 @@
             "type": "group",
             "text": "校验",
             "desc": "提供校验输入内容格式设置",
+            "display":"@[openCheck]",
             "children": [
                 {
                     "type": "switch",
@@ -652,6 +662,127 @@
                             "display": "@[bgImgUrlError]"
                         }
                     ]
+                },
+                {
+                    "type": "group",
+                    "text": "单项样式设置",
+                    "desc": "单个单选选项样式设置",
+                    "children":[
+                        {
+                            "type": "inputNumberUnit",
+                            "layoutType": "inline",
+                            "text": "最大宽度",
+                            "bindKey": "maxWidthItem",
+                            "dictionary": [
+                                {
+                                    "label": "auto",
+                                    "value": "auto"
+                                },
+                                {
+                                    "label": "px",
+                                    "value": "px"
+                                },
+                                {
+                                    "label": "%",
+                                    "value": "%"
+                                },
+                                {
+                                    "label": "rem",
+                                    "value": "rem"
+                                },
+                                {
+                                    "label": "em",
+                                    "value": "em"
+                                }
+                            ],
+                            "default": 0
+                        },
+                        {
+                            "type": "inputNumberUnit",
+                            "layoutType": "inline",
+                            "text": "最小宽度",
+                            "bindKey": "minWidthItem",
+                            "dictionary": [
+                                {
+                                    "label": "auto",
+                                    "value": "auto"
+                                },
+                                {
+                                    "label": "px",
+                                    "value": "px"
+                                },
+                                {
+                                    "label": "%",
+                                    "value": "%"
+                                },
+                                {
+                                    "label": "rem",
+                                    "value": "rem"
+                                },
+                                {
+                                    "label": "em",
+                                    "value": "em"
+                                }
+                            ],
+                            "default": 0
+                        },
+                        {
+                            "type": "inputNumberUnit",
+                            "layoutType": "inline",
+                            "text": "右边距",
+                            "bindKey": "rightMarginItem",
+                            "dictionary": [
+                                {
+                                    "label": "auto",
+                                    "value": "auto"
+                                },
+                                {
+                                    "label": "px",
+                                    "value": "px"
+                                },
+                                {
+                                    "label": "%",
+                                    "value": "%"
+                                },
+                                {
+                                    "label": "rem",
+                                    "value": "rem"
+                                },
+                                {
+                                    "label": "em",
+                                    "value": "em"
+                                }
+                            ],
+                            "default": 0
+                        },
+                        {
+                            "type": "box",
+                            "layoutType": "block",
+                            "text": "内外边距",
+                            "bindKey": "boxItem"
+                        }
+                    ]
+                },
+                {
+                    "type": "group",
+                    "text": "背景设置",
+                    "desc": "点击？查看背景设置用法指南",
+                    "children":[
+                        {
+                            "type": "colorPicker",
+                            "layoutType": "inline",
+                            "text": "背景色",
+                            "bindKey": "bgColor",
+                            "placeholder": "请选择颜色",
+                            "default": {}
+                        }
+                    ]
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "内外边距",
+                    "bindKey": "box"
                 }
             ]
         },
@@ -709,6 +840,24 @@
                             "text": "选项值",
                             "bindKey": "value",
                             "placeholder": "请输入"
+                        },
+                        {
+                            "type": "select",
+                            "layoutType": "inline",
+                            "text": "值类型",
+                            "bindKey": "valueType",
+                            "desc": "设置“选项值”的类型，如果为数字，则会强制把“选项值”转换为number类型",
+                            "dictionary": [
+                                {
+                                    "label": "数字",
+                                    "value": "number"
+                                },
+                                {
+                                    "label": "字符串",
+                                    "value": "string"
+                                }
+                            ],
+                            "default": "string"
                         },
                         {
                             "type": "switch",

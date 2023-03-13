@@ -38,7 +38,7 @@
         <div class="fic-message-box" v-html="propData.descContent" v-if="propData.gridLayout=='6:12'&&propData.descPosition=='horizontal'&&propData.defaultStatus!='readonly'">
         </div>
       </div>
-      <div class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
+      <div v-if="propData.openCheck" class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
         <div class="fic-label-box" :style="getStyle('label')" v-if="(propData.labelDisplay||propData.labelDisplay==undefined)&&(propData.labelLayout=='horizontal'||propData.labelLayout==undefined)">
         </div>
         <div class="fic-select-box" :style="getStyle('content')">
@@ -83,6 +83,39 @@ export default {
   },
   destroyed() {},
   methods:{
+    convertAttrToStyleObjectItem() {
+      var styleObject = {};
+      for (const key in this.propData) {
+        if (this.propData.hasOwnProperty.call(this.propData, key)) {
+          const element = this.propData[key];
+          if(!element&&element!==false&&element!=0){
+            continue;
+          }
+          switch (key) {
+            case "maxWidthItem":
+              if(this.propData.maxWidthItem && this.propData.maxWidthItem.inputVal&&this.propData.maxWidthItem.selectVal){
+                styleObject["max-width"] = this.propData.maxWidthItem.inputVal+this.propData.maxWidthItem.selectVal;
+              }
+              break;
+            case "minWidthItem":
+              if(this.propData.minWidthItem&&this.propData.minWidthItem.selectVal){
+                styleObject["min-width"] = this.propData.minWidthItem.inputVal+this.propData.minWidthItem.selectVal;
+              }
+              break;
+            case "rightMarginItem":
+              if(this.propData.rightMarginItem&&this.propData.rightMarginItem.selectVal){
+                styleObject["margin-right"] = this.propData.rightMarginItem.inputVal+this.propData.rightMarginItem.selectVal;
+              }
+              break;
+            case "boxItem":
+              IDM.style.setBoxStyle(styleObject,element)
+              break;
+          }
+        }
+      }
+      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-wrapper",styleObject);
+      window.IDM.setStyleToPageHead(this.moduleObject.id+" .ant-radio-button-wrapper",styleObject);
+    },
     /**
      * 把属性转换成错误消息的文字样式
      */
@@ -193,46 +226,21 @@ export default {
               }
               break;
             case "contentEditFont":
-              styleObject_f["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject_f["color"] = element.fontColors.hex8;
-              }
-              styleObject_f["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject_f["font-style"] = element.fontStyle;
-              styleObject_f["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject_f["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject_f["text-align"] = element.fontTextAlign;
-              styleObject_f["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject_f,element)
               break;
           }
         }
       }
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-inner",
-        styleObject
-      );
       if(styleObject["border-color"]){
-        window.IDM.setStyleToPageHead(
-          this.moduleObject.id + " .ant-radio-button-wrapper:not(:first-child):before",
+        window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-button-wrapper:not(:first-child):before",
           {
             "background-color":styleObject["border-color"]
           }
         );
       }
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-button-wrapper",
-        {...styleObject,...styleObject_f}
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .ant-radio-group .ant-radio-wrapper",
-        styleObject_f
-      );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-inner", styleObject );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-button-wrapper", {...styleObject,...styleObject_f} );
+      window.IDM.setStyleToPageHead( this.moduleObject.id + " .ant-radio-group .ant-radio-wrapper", styleObject_f );
       //其他内容元素
     },
     
@@ -420,16 +428,37 @@ export default {
      * 把属性转换成样式对象
      */
     convertAttrToStyleObject(){
+      let styleObject = {};
       //默认值
       this.thisValue = this.propData.defaultValue||'';
       this.convertAttrToReadOnlyFontStyle();
       this.convertAttrToLabelFontStyle();
       this.convertAttrToErrorMsgFontStyle();
+      this.convertAttrToStyleObjectItem()
       if(this.propData.defaultStatus!='disabled'){
         this.convertAttrToRadioDefaultStyle();
         this.convertAttrToRadioFoucsStyle();
       }
       this.convertAttrToRadioErrorStyle();
+      for (const key in this.propData) {
+        if (this.propData.hasOwnProperty.call(this.propData, key)) {
+          const element = this.propData[key];
+          if (!element && element !== false) {
+            continue;
+          }
+          switch (key) {
+            case 'bgColor':
+              if (element && element.hex8) {
+                styleObject['background-color'] = IDM.hex8ToRgbaString(element.hex8);
+              }
+              break;
+            case "box":
+              IDM.style.setBoxStyle(styleObject,element)
+              break;
+          }
+        }
+      }
+      window.IDM.setStyleToPageHead(this.moduleObject.id, styleObject);
       //选项绑定（静态数据、数据接口、自定义函数、接收其他组件传值【参数、结果集】（结果集的话需要支持自定义显示字段、参数的话需要把整个内容传递到自定义接口中））
       this.optionBind();
       //结果联动（无、接收其他组件传值【显示字段、自定义渲染函数】）【其他组件也通用的】
@@ -447,6 +476,15 @@ export default {
       switch (this.propData.optionType) {
         case "static":
           this.optionList = this.propData.optionStaticList||[];
+          this.optionList.forEach(item=>{
+            if(item.valueType=="number"){
+              try {
+                item.value = parseFloat(item.value);
+              } catch (error) {
+                
+              }
+            }
+          })
           this.optionBindAfter();
           break;
         case "interface":
@@ -833,7 +871,7 @@ export default {
           filedExp = this.propData.echoDataName+(filedExp.startsWiths("[")?"":".")+filedExp;
           _thisValue = window.IDM.express.replace.call(this, "@["+filedExp+"]", dataObject);
         }
-        if(_thisValue){
+        if(_thisValue||_thisValue===0){
           this.echoValue = _thisValue;
           this.thisValue = _thisValue;
           this.change(this.thisValue,false)
@@ -906,7 +944,7 @@ export default {
         this.errorMessage = "";
         return result;
       }
-      let thisSelectVal = this.thisValue||'';
+      let thisSelectVal = this.thisValue||this.thisValue===0?this.thisValue:'';
       // console.log("🚀 ~ file: ISelect.vue ~ line 793 ~ verifySelectValue ~ thisSelectVal", thisSelectVal)
       //这里开始判断执行是否需要校验
       if(this.propData.required&&thisSelectVal.length==0){
@@ -1052,4 +1090,9 @@ export default {
 </script>
 <style lang="scss">
 @import "../style/formsCommon.scss";
+</style>
+<style lang="scss" scoped>
+.ant-radio-group{
+  width: 100%;
+}
 </style>

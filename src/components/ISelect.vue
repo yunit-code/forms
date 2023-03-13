@@ -47,7 +47,7 @@
         <div class="fic-message-box" v-html="propData.descContent" v-if="propData.gridLayout=='6:12'&&propData.descPosition=='horizontal'&&propData.defaultStatus!='readonly'">
         </div>
       </div>
-      <div class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
+      <div v-if="propData.openCheck" class="forms-message-container" :class="`layout-${propData.labelLayout||'horizontal'}${!propData.retainBottomHeight?'':' retain-bottom-height'}`">
         <div class="fic-label-box" :style="getStyle('label')" v-if="(propData.labelDisplay||propData.labelDisplay==undefined)&&(propData.labelLayout=='horizontal'||propData.labelLayout==undefined)">
         </div>
         <div class="fic-select-box" :style="getStyle('content')">
@@ -918,7 +918,7 @@ export default {
       }
       //触发变动事件
       if(this.thisValue!=undefined&&this.thisValue!=[]){
-        this.change(this.thisValue,true)
+        this.change(this.thisValue, !this.propData.needDefaultChange ? true : '0')
       }
       //只读情况下调用只读显示值
       if(this.propData.defaultStatus=="readonly"){

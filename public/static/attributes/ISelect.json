@@ -293,9 +293,18 @@
                 {
                     "type": "switch",
                     "layoutType": "inline",
+                    "text": "开启校验",
+                    "desc":"是否开启校验功能",
+                    "bindKey": "openCheck",
+                    "default": true
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
                     "text": "校验占位",
                     "desc":"是否预留校验信息空间，开启将会在底部占用25px空白预留给校验信息使用",
                     "bindKey": "retainBottomHeight",
+                    "display":"@[openCheck]",
                     "default": true
                 }
             ]
@@ -304,6 +313,7 @@
             "type": "group",
             "text": "校验",
             "desc": "提供校验输入内容格式设置",
+            "display":"@[openCheck]",
             "children": [
                 {
                     "type": "switch",
@@ -1407,6 +1417,14 @@
                     "bindKey": "renderOptionFunction",
                     "desc": "自定义格式化每个选项显示的值",
                     "multiple": false
+                },
+                {
+                  "type": "switch",
+                  "layoutType": "inline",
+                  "text": "首次触发",
+                  "bindKey": "needDefaultChange",
+                  "desc": "选项绑定后是否触发【值发生变化时的动作】",
+                  "default": false
                 },
                 {
                     "type": "actionSelect",
