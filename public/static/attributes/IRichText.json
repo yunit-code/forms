@@ -160,6 +160,13 @@
                     "default": 200
                 },
                 {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "宽度",
+                    "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
+                    "bindKey": "width"
+                },
+                {
                     "type": "radio",
                     "layoutType": "inline",
                     "text": "栅格布局",

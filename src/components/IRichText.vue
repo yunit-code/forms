@@ -55,7 +55,8 @@
                 quickbars_selection_toolbar: 'removeformat | bold italic underline strikethrough | fontsizeselect forecolor backcolor',
                 plugins: 'link image media table lists fullscreen quickbars',
                 language: 'zh_CN',
-                height: propData.size||200
+                height: propData.size||200,
+                width: propData.width
               }"
               @change="blurChange" />
           </div>

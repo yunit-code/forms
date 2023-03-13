@@ -46,9 +46,9 @@
       "no-empty": 0,
       "no-case-declarations": 0,
       "no-redeclare": 0,
-      "no-useless-escape":0,
-      "no-undef":0,
-      "vue/no-unused-vars":0
+      "no-useless-escape": 0,
+      "no-undef": 0,
+      "vue/no-unused-vars": 0
     },
     "globals": {
       "IDM": true,
