@@ -29,6 +29,7 @@
            :class="{'error-state':errorMessage}" 
            :disabled="propData.defaultStatus=='disabled'" 
            :notFoundContent="propData.notFoundContent||'Not Found'" 
+           option-filter-prop="children"
            :showArrow="propData.showArrow!==false?true:false" 
            v-model="thisValue" 
            :size="propData.size" 
