@@ -1329,7 +1329,7 @@ export default {
     /**
      * 选项绑定
      */
-    optionBind(itemPropData,byValData){
+    async optionBind(itemPropData,byValData){
       let that = this;
       switch (itemPropData.optionType) {
         case "interface":
@@ -1352,7 +1352,7 @@ export default {
           if(itemPropData.optionFunction&&itemPropData.optionFunction.length>0){
             var optionList = [];
             try {
-              optionList = window[itemPropData.optionFunction[0].name]&&window[itemPropData.optionFunction[0].name].call(this,{...itemPropData.optionFunction[0].param,moduleObject:this.moduleObject});
+              optionList = await window[itemPropData.optionFunction[0].name]&&window[itemPropData.optionFunction[0].name].call(this,{...itemPropData.optionFunction[0].param,moduleObject:this.moduleObject});
             } catch (error) {
             }
             that.optionListHandle(optionList,itemPropData);
