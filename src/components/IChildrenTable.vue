@@ -1393,7 +1393,7 @@ export default {
                 if(itemPropData.byValFunction&&itemPropData.byValFunction.length>0){
                   var optionList = [];
                   try {
-                    optionList = window[itemPropData.byValFunction[0].name]&&window[itemPropData.byValFunction[0].name].call(this,{...itemPropData.byValFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
+                    optionList = await window[itemPropData.byValFunction[0].name]&&window[itemPropData.byValFunction[0].name].call(this,{...itemPropData.byValFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
                   } catch (error) {
                   }
                   this.optionListHandle(optionList,itemPropData);
