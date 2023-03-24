@@ -1329,17 +1329,22 @@ export default {
     /**
      * 选项绑定
      */
-    async optionBind(itemPropData,byValData){
+    optionBind(itemPropData,byValData){
       let that = this;
       switch (itemPropData.optionType) {
         case "interface":
           //获取所有的URL参数、页面ID（pageId）、以及所有组件的返回值（用范围值去调用IDM提供的方法取出所有的组件值）
           let urlObject = window.IDM.url.queryObject(),
           pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
-          itemPropData.optionInterfaceUrl&&window.IDM.http.get(itemPropData.optionInterfaceUrl, {
+          let param = {
             urlData:JSON.stringify(urlObject),
             pageId
-          }).then((res) => {
+          }
+          if(itemPropData.optionRequestParamFormatFunction&&itemPropData.optionRequestParamFormatFunction.length>0){
+            window[itemPropData.optionRequestParamFormatFunction[0].name]&&window[itemPropData.optionRequestParamFormatFunction[0].name].call(this,
+            {...itemPropData.optionRequestParamFormatFunction[0].param,moduleObject:that.moduleObject,param})
+          }
+          itemPropData.optionInterfaceUrl&&window.IDM.http.get(itemPropData.optionInterfaceUrl, param).then((res) => {
             if (res.data.code == 200) {
               that.optionListHandle(res.data,itemPropData);
             } else {
@@ -1352,7 +1357,7 @@ export default {
           if(itemPropData.optionFunction&&itemPropData.optionFunction.length>0){
             var optionList = [];
             try {
-              optionList = await window[itemPropData.optionFunction[0].name]&&window[itemPropData.optionFunction[0].name].call(this,{...itemPropData.optionFunction[0].param,moduleObject:this.moduleObject});
+              optionList = window[itemPropData.optionFunction[0].name]&&window[itemPropData.optionFunction[0].name].call(this,{...itemPropData.optionFunction[0].param,moduleObject:this.moduleObject});
             } catch (error) {
             }
             that.optionListHandle(optionList,itemPropData);
@@ -1393,7 +1398,7 @@ export default {
                 if(itemPropData.byValFunction&&itemPropData.byValFunction.length>0){
                   var optionList = [];
                   try {
-                    optionList = await window[itemPropData.byValFunction[0].name]&&window[itemPropData.byValFunction[0].name].call(this,{...itemPropData.byValFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
+                    optionList = window[itemPropData.byValFunction[0].name]&&window[itemPropData.byValFunction[0].name].call(this,{...itemPropData.byValFunction[0].param,moduleObject:this.moduleObject,byVal:byValData});
                   } catch (error) {
                   }
                   this.optionListHandle(optionList,itemPropData);
