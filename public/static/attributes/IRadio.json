@@ -285,10 +285,10 @@
                 {
                     "type": "switch",
                     "layoutType": "inline",
-                    "text": "开启校验",
+                    "text": "关闭校验",
                     "desc":"是否开启校验功能",
-                    "bindKey": "openCheck",
-                    "default": true
+                    "bindKey": "closeCheck",
+                    "default": false
                 },
                 {
                     "type": "switch",
@@ -296,7 +296,7 @@
                     "text": "校验占位",
                     "desc":"是否预留校验信息空间，开启将会在底部占用25px空白预留给校验信息使用",
                     "bindKey": "retainBottomHeight",
-                    "display":"@[openCheck]",
+                    "display":"@[!closeCheck]",
                     "default": true
                 }
             ]
@@ -305,7 +305,7 @@
             "type": "group",
             "text": "校验",
             "desc": "提供校验输入内容格式设置",
-            "display":"@[openCheck]",
+            "display":"@[!closeCheck]",
             "children": [
                 {
                     "type": "switch",
