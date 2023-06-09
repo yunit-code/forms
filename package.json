@@ -5,19 +5,22 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "gen": "idm-generate vue"
   },
   "dependencies": {
+    "@packy-tang/vue-tinymce": "^1.1.2",
+    "@tinymce/tinymce-vue": "^4.0.3",
     "ant-design-vue": "^1.7.6",
     "core-js": "^3.6.5",
     "sass-loader": "^8.0.2",
+    "tinymce": "^5.8.1",
     "vue": "^2.6.11",
-    "vuedraggable": "^2.24.3",
-    "@packy-tang/vue-tinymce": "^1.1.2",
-    "@tinymce/tinymce-vue": "^4.0.3",
-    "tinymce": "^5.8.1"
+    "vue-ueditor-wrap": "^2.5.6",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
+    "@idm-modules/cli-generate": "^1.0.36",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
@@ -26,8 +29,8 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.32.8",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11",
-    "svg-sprite-loader": "^4.1.6"
+    "svg-sprite-loader": "^4.1.6",
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,

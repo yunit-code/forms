@@ -1,0 +1,113 @@
+{
+    "classId": "idm.component.forms.iueditor",
+    "comName": "UEditor",
+    "className": "IUeditor",
+    "comType": "common",
+    "comLangue": "vue",
+    "compositeAttr": [
+        {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "唯一标识",
+            "bindKey": "ctrlId",
+            "disabled": true,
+            "default": "@[packageid]",
+            "desc": "",
+            "helpUrl": ""
+        },
+        {
+            "type": "group",
+            "text": "基本属性",
+            "desc": "提供设置组件能达到展示效果的基本属性设置信息",
+            "children": [
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "左侧label",
+                    "bindKey": "label",
+                    "default": ""
+                },
+                {
+                    "type": "radio",
+                    "styleType": "radio",
+                    "layoutType": "inline",
+                    "text": "工具栏",
+                    "bindKey": "isShowToolBar",
+                    "dictionary": [
+                        {
+                            "label": "显示",
+                            "value": true
+                        },
+                        {
+                            "label": "隐藏",
+                            "value": false
+                        }
+                    ],
+                    "default": true
+                },
+                {
+                    "type": "radio",
+                    "styleType": "radio",
+                    "layoutType": "inline",
+                    "text": "自动保存",
+                    "desc": "设置ueditor是否自动保存",
+                    "bindKey": "enableAutoSave",
+                    "dictionary": [
+                        {
+                            "label": "开启",
+                            "value": true
+                        },
+                        {
+                            "label": "关闭",
+                            "value": false
+                        }
+                    ],
+                    "default": true
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "text": "样式设置",
+            "desc": "点击？查看样式设置用法指南",
+            "helpUrl": "",
+            "children": [
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "宽度",
+                    "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
+                    "bindKey": "width",
+                    "default": "100%"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "高度",
+                    "desc": "填写auto则为自适应，或者使用px、%、vw等单位，比如100%、100px、100vw等等",
+                    "bindKey": "height",
+                    "default": "300px"
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "内外边距",
+                    "bindKey": "box"
+                },
+                {
+                    "type": "box",
+                    "layoutType": "block",
+                    "text": "label内外边距",
+                    "bindKey": "labelBox"
+                },
+                {
+                    "type": "border",
+                    "layoutType": "block",
+                    "text": "边框",
+                    "bindKey": "border"
+                }
+            ]
+        }
+    ]
+}
+      
