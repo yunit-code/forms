@@ -927,6 +927,31 @@
             "desc": "点击？查看高级设置用法指南",
             "children": [
                 {
+                    "type": "select",
+                    "layoutType": "inline",
+                    "text": "文本内容",
+                    "bindKey": "dataSourceType",
+                    "desc": "通过这些方式去动态获取结果值显示成文本内容",
+                    "dictionary": [
+                        {
+                            "label": "无",
+                            "value": "none"
+                        },
+                        {
+                            "label": "接收联动消息",
+                            "value": "receiveMessage"
+                        }
+                    ],
+                    "default": "none"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "消息类型",
+                    "bindKey": "buttonTextObjectType",
+                    "default": ""
+                },
+                {
                     "type": "radio",
                     "layoutType": "inline",
                     "text": "提交方式",

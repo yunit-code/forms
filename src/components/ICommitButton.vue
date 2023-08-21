@@ -15,7 +15,7 @@
     <a-button @click="commitData" :loading="okLoading" :type="propData.buttonType" v-if="propData.defaultStatus!='hidden'" :disabled="propData.defaultStatus=='disabled'" :size="propData.size||'default'">
       <svg class="button-svg-icon" v-if="propData.icon&&propData.icon.length>0" aria-hidden="true">
           <use :xlink:href="`#${propData.icon[0]}`"></use>
-      </svg>{{propData.label}}
+      </svg>{{buttonText}}
     </a-button>
   </div>
 </template>
@@ -29,7 +29,8 @@ export default {
       thisValue:"",
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{},
-      okLoading:false
+      okLoading:false,
+      buttonText: ''
     }
   },
   props: {
@@ -38,6 +39,7 @@ export default {
     this.moduleObject = this.$root.moduleObject
     // console.log(this.moduleObject)
     // this.propData = testAttr;
+    this.buttonText = this.propData.label;
     this.convertAttrToStyleObject();
   },
   mounted() {
@@ -547,6 +549,7 @@ export default {
      */
     propDataWatchHandle(propData){
       this.propData = propData.compositeAttr||{};
+      this.buttonText = this.propData.label;
       this.convertAttrToStyleObject();
     },
     /**
@@ -705,6 +708,9 @@ export default {
      */
     receiveBroadcastMessage(object){
       console.log("组件收到消息",object)
+      if (object.type == this.propData.buttonTextObjectType) {
+        this.buttonText = object.message
+      }
     },
     /**
      * 组件通信：发送消息的方法
