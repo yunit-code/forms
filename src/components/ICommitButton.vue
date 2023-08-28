@@ -12,7 +12,7 @@
       idm-ctrl-id：组件的id，这个必须不能为空
       idm-container-index  组件的内部容器索引，不重复唯一且不变，必选
     -->
-    <a-button @click="commitData" :loading="okLoading" :type="propData.buttonType" v-if="propData.defaultStatus!='hidden'" :disabled="propData.defaultStatus=='disabled'" :size="propData.size||'default'">
+    <a-button @click="commitData" :loading="okLoading" :type="propData.buttonType" v-if="propData.defaultStatus!='hidden'&&is_show" :disabled="propData.defaultStatus=='disabled'" :size="propData.size||'default'">
       <svg class="button-svg-icon" v-if="propData.icon&&propData.icon.length>0" aria-hidden="true">
           <use :xlink:href="`#${propData.icon[0]}`"></use>
       </svg>{{buttonText}}
@@ -30,7 +30,9 @@ export default {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{},
       okLoading:false,
-      buttonText: ''
+      buttonText: '',
+      conditionObject: {},
+      is_show: true,
     }
   },
   props: {
@@ -41,6 +43,7 @@ export default {
     // this.propData = testAttr;
     this.buttonText = this.propData.label;
     this.convertAttrToStyleObject();
+    this.getShowHideStatus()
   },
   mounted() {
     //赋值给window提供跨页面调用
@@ -50,6 +53,20 @@ export default {
   },
   destroyed() {},
   methods:{
+    getShowHideStatus() {
+      if (this.propData.showHideFunction && this.propData.showHideFunction.length) {
+        let resValue = true
+        try {
+          resValue = window[this.propData.showHideFunction[0].name]&&window[this.propData.showHideFunction[0].name].call(this,{
+            ...this.propData.showHideFunction[0].param,
+            moduleObject:this.moduleObject,
+            _this: this
+          });
+        } catch (error) {
+        }
+        this.is_show = resValue
+      }
+    },
     /**
      * 把属性转换成按钮的样式设置(active)
      */
@@ -710,6 +727,25 @@ export default {
       console.log("组件收到消息",object)
       if (object.type == this.propData.buttonTextObjectType) {
         this.buttonText = object.message
+      }
+      if (this.propData.linkageParamList && this.propData.linkageParamList.length&&this.moduleObject.env=='production') {
+        this.propData.linkageParamList.forEach((item) => {
+          if (object.type == item.messageType) {
+            if(item.customFunction&&item.customFunction.length) {
+              var clickFunction = item.customFunction;
+              clickFunction&&clickFunction.forEach(e=>{
+                  window[e.name]&&window[e.name].call(this,{
+                      customParam:e.param,
+                      message: object.message,
+                      _this:this,
+                  });
+              })
+            } else {
+              this.conditionObject[item.paramKey] = object.message
+            }
+            this.getShowHideStatus()
+          }
+        })
       }
     },
     /**

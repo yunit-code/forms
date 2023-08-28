@@ -949,6 +949,7 @@
                     "layoutType": "inline",
                     "text": "消息类型",
                     "bindKey": "buttonTextObjectType",
+                    "desc":"文本内容通过组件消息传参获取，设置消息类型后接收此类消息的message值作为文本内容",
                     "default": ""
                 },
                 {
@@ -1036,6 +1037,44 @@
                     "bindKey": "formGroupKey",
                     "desc": "表单分组标识，用于批量提交分组标识相同的表单控件值，减少一个一个选择控件的范围，注意：提交范围与分组标识是交集关系，都能起到作用",
                     "default": "formGroupKey"
+                },
+                {
+                    "type": "table",
+                    "text": "接收其他组件联动参数",
+                    "bindKey": "linkageParamList",
+                    "tabText": "参数[index]",
+                    "children": [
+                        {
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "消息类型",
+                            "bindKey": "messageType",
+                            "default": ""
+                        },
+                        {
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "参数别名",
+                            "bindKey": "paramKey",
+                            "default": ""
+                        },
+                        {
+                            "type": "actionSelect",
+                            "layoutType": "block",
+                            "text": "自定义函数",
+                            "bindKey": "customFunction",
+                            "desc": "如果接收到参数需要自定义操作，可进行此项配置",
+                            "multiple": false
+                        }
+                    ]
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "显示隐藏自定义函数",
+                    "bindKey": "showHideFunction",
+                    "desc": "组件显示隐藏的自定义函数，返回true-显示，返回false-隐藏{...自定义的,_this}",
+                    "multiple": false
                 }
             ]
         }
