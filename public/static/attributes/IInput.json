@@ -1316,6 +1316,14 @@
                             "multiple": true
                         }
                     ]
+                },
+                {
+                  "type": "actionSelect",
+                  "layoutType": "block",
+                  "text": "组件加载自定义函数",
+                  "bindKey": "mountedFunction",
+                  "desc": "组件加载后会调用此处设置的方法，接收参数格式为{...自定义的,_this,urlObject}",
+                  "multiple": false
                 }
             ]
         }

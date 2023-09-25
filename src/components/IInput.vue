@@ -161,9 +161,29 @@ export default {
     // this.propData = testAttr;
     this.convertAttrToStyleObject();
   },
-  mounted() {},
+  mounted() {
+    this.mountedDefaultFunction()
+  },
   destroyed() {},
   methods: {
+    mountedDefaultFunction() {
+      let that = this;
+      if(this.moduleObject.env=="develop"){
+        return;
+      }
+      let urlObject = window.IDM.url.queryObject(),
+      pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
+     
+      var clickFunction = this.propData.mountedFunction;
+      clickFunction&&clickFunction.forEach(item=>{
+        window[item.name]&&window[item.name].call(this,{
+          urlData:urlObject,
+          pageId,
+          customParam:item.param,
+          _this:this
+        });
+      })
+    },
     /**
      * 把属性转换成错误消息的文字样式
      */
