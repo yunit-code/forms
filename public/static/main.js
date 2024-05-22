@@ -96,7 +96,6 @@
             loadjs(apps.slice(1), this.callback)
             : ( typeof this.callback === 'function' && this.callback.call(this) );
         }
-        
         config.resources[item] = url;
         return that;
     }

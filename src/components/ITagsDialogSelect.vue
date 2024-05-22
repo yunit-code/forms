@@ -149,22 +149,7 @@ export default {
           }
           switch (key) {
             case "errorMsgFont":
-              styleObject["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject["color"] = element.fontColors.hex8;
-              }
-              styleObject["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject["font-style"] = element.fontStyle;
-              styleObject["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject["text-align"] = element.fontTextAlign;
-              styleObject["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject, element)
               break;
           }
         }
@@ -187,22 +172,7 @@ export default {
           }
           switch (key) {
             case "labelFont":
-              styleObject["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject["color"] = element.fontColors.hex8;
-              }
-              styleObject["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject["font-style"] = element.fontStyle;
-              styleObject["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject["text-align"] = element.fontTextAlign;
-              styleObject["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject, element)
               break;
           }
         }
@@ -225,22 +195,7 @@ export default {
           }
           switch (key) {
             case "contentReadFont":
-              styleObject["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject["color"] = element.fontColors.hex8;
-              }
-              styleObject["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject["font-style"] = element.fontStyle;
-              styleObject["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject["text-align"] = element.fontTextAlign;
-              styleObject["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject, element)
               break;
           }
         }
@@ -303,74 +258,10 @@ export default {
               styleObject["background-attachment"] = element;
               break;
             case "borderDefault":
-              if (element.border.top.width > 0) {
-                styleObject["border-top-width"] =
-                  element.border.top.width + element.border.top.widthUnit;
-                styleObject["border-top-style"] = element.border.top.style;
-                if (element.border.top.colors.hex8) {
-                  styleObject["border-top-color"] =
-                    element.border.top.colors.hex8;
-                }
-              }
-              if (element.border.right.width > 0) {
-                styleObject["border-right-width"] =
-                  element.border.right.width + element.border.right.widthUnit;
-                styleObject["border-right-style"] = element.border.right.style;
-                if (element.border.right.colors.hex8) {
-                  styleObject["border-right-color"] =
-                    element.border.right.colors.hex8;
-                }
-              }
-              if (element.border.bottom.width > 0) {
-                styleObject["border-bottom-width"] =
-                  element.border.bottom.width + element.border.bottom.widthUnit;
-                styleObject["border-bottom-style"] =
-                  element.border.bottom.style;
-                if (element.border.bottom.colors.hex8) {
-                  styleObject["border-bottom-color"] =
-                    element.border.bottom.colors.hex8;
-                }
-              }
-              if (element.border.left.width > 0) {
-                styleObject["border-left-width"] =
-                  element.border.left.width + element.border.left.widthUnit;
-                styleObject["border-left-style"] = element.border.left.style;
-                if (element.border.left.colors.hex8) {
-                  styleObject["border-left-color"] =
-                    element.border.left.colors.hex8;
-                }
-              }
-
-              styleObject["border-top-left-radius"] =
-                element.radius.leftTop.radius +
-                element.radius.leftTop.radiusUnit;
-              styleObject["border-top-right-radius"] =
-                element.radius.rightTop.radius +
-                element.radius.rightTop.radiusUnit;
-              styleObject["border-bottom-left-radius"] =
-                element.radius.leftBottom.radius +
-                element.radius.leftBottom.radiusUnit;
-              styleObject["border-bottom-right-radius"] =
-                element.radius.rightBottom.radius +
-                element.radius.rightBottom.radiusUnit;
+              IDM.style.setBorderStyle(styleObject, element)
               break;
             case "contentEditFont":
-              styleObject["font-family"] = element.fontFamily;
-              if (element.fontColors.hex8) {
-                styleObject["color"] = element.fontColors.hex8;
-              }
-              styleObject["font-weight"] =
-                element.fontWeight && element.fontWeight.split(" ")[0];
-              styleObject["font-style"] = element.fontStyle;
-              styleObject["font-size"] =
-                element.fontSize + element.fontSizeUnit;
-              styleObject["line-height"] =
-                element.fontLineHeight +
-                (element.fontLineHeightUnit == "-"
-                  ? ""
-                  : element.fontLineHeightUnit);
-              styleObject["text-align"] = element.fontTextAlign;
-              styleObject["text-decoration"] = element.fontDecoration;
+              IDM.style.setFontStyle(styleObject, element)
               break;
           }
         }
@@ -441,56 +332,7 @@ export default {
               styleObject["background-attachment"] = element;
               break;
             case "borderFocus":
-              if (element.border.top.width > 0) {
-                styleObject["border-top-width"] =
-                  element.border.top.width + element.border.top.widthUnit;
-                styleObject["border-top-style"] = element.border.top.style;
-                if (element.border.top.colors.hex8) {
-                  styleObject["border-top-color"] =
-                    element.border.top.colors.hex8;
-                }
-              }
-              if (element.border.right.width > 0) {
-                styleObject["border-right-width"] =
-                  element.border.right.width + element.border.right.widthUnit;
-                styleObject["border-right-style"] = element.border.right.style;
-                if (element.border.right.colors.hex8) {
-                  styleObject["border-right-color"] =
-                    element.border.right.colors.hex8;
-                }
-              }
-              if (element.border.bottom.width > 0) {
-                styleObject["border-bottom-width"] =
-                  element.border.bottom.width + element.border.bottom.widthUnit;
-                styleObject["border-bottom-style"] =
-                  element.border.bottom.style;
-                if (element.border.bottom.colors.hex8) {
-                  styleObject["border-bottom-color"] =
-                    element.border.bottom.colors.hex8;
-                }
-              }
-              if (element.border.left.width > 0) {
-                styleObject["border-left-width"] =
-                  element.border.left.width + element.border.left.widthUnit;
-                styleObject["border-left-style"] = element.border.left.style;
-                if (element.border.left.colors.hex8) {
-                  styleObject["border-left-color"] =
-                    element.border.left.colors.hex8;
-                }
-              }
-
-              styleObject["border-top-left-radius"] =
-                element.radius.leftTop.radius +
-                element.radius.leftTop.radiusUnit;
-              styleObject["border-top-right-radius"] =
-                element.radius.rightTop.radius +
-                element.radius.rightTop.radiusUnit;
-              styleObject["border-bottom-left-radius"] =
-                element.radius.leftBottom.radius +
-                element.radius.leftBottom.radiusUnit;
-              styleObject["border-bottom-right-radius"] =
-                element.radius.rightBottom.radius +
-                element.radius.rightBottom.radiusUnit;
+              IDM.style.setBorderStyle(styleObject, element)
               break;
           }
         }
@@ -561,56 +403,7 @@ export default {
               styleObject["background-attachment"] = element;
               break;
             case "borderError":
-              if (element.border.top.width > 0) {
-                styleObject["border-top-width"] =
-                  element.border.top.width + element.border.top.widthUnit;
-                styleObject["border-top-style"] = element.border.top.style;
-                if (element.border.top.colors.hex8) {
-                  styleObject["border-top-color"] =
-                    element.border.top.colors.hex8;
-                }
-              }
-              if (element.border.right.width > 0) {
-                styleObject["border-right-width"] =
-                  element.border.right.width + element.border.right.widthUnit;
-                styleObject["border-right-style"] = element.border.right.style;
-                if (element.border.right.colors.hex8) {
-                  styleObject["border-right-color"] =
-                    element.border.right.colors.hex8;
-                }
-              }
-              if (element.border.bottom.width > 0) {
-                styleObject["border-bottom-width"] =
-                  element.border.bottom.width + element.border.bottom.widthUnit;
-                styleObject["border-bottom-style"] =
-                  element.border.bottom.style;
-                if (element.border.bottom.colors.hex8) {
-                  styleObject["border-bottom-color"] =
-                    element.border.bottom.colors.hex8;
-                }
-              }
-              if (element.border.left.width > 0) {
-                styleObject["border-left-width"] =
-                  element.border.left.width + element.border.left.widthUnit;
-                styleObject["border-left-style"] = element.border.left.style;
-                if (element.border.left.colors.hex8) {
-                  styleObject["border-left-color"] =
-                    element.border.left.colors.hex8;
-                }
-              }
-
-              styleObject["border-top-left-radius"] =
-                element.radius.leftTop.radius +
-                element.radius.leftTop.radiusUnit;
-              styleObject["border-top-right-radius"] =
-                element.radius.rightTop.radius +
-                element.radius.rightTop.radiusUnit;
-              styleObject["border-bottom-left-radius"] =
-                element.radius.leftBottom.radius +
-                element.radius.leftBottom.radiusUnit;
-              styleObject["border-bottom-right-radius"] =
-                element.radius.rightBottom.radius +
-                element.radius.rightBottom.radiusUnit;
+              IDM.style.setBorderStyle(styleObject, element)
               break;
           }
         }

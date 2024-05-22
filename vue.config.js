@@ -158,13 +158,13 @@ module.exports = {
         chunkFilename: `${assetsDir}/js/[name].js`,
         jsonpFunction:JSON.stringify("webpackJsonp_"+getGUID()+"_"+new Date().getTime())
       },
-      // resolve:{
-      //   extensions: ['.js', '.vue', '.json'],
-      //   alias: {
-      //     //按需引入ant design的图标，防止打包文件过大
-      //     '@ant-design/icons/lib/dist$': resolve('src/plugins/antdicons.js')
-      //   }
-      // }
+      resolve:{
+        extensions: ['.js', '.vue', '.json'],
+        alias: {
+          //按需引入ant design的图标，防止打包文件过大
+          '@ant-design/icons/lib/dist$': resolve('src/plugins/antdicons.js')
+        }
+      }
     },
     css: {
         // 是否使用css分离插件 ExtractTextPlugin
