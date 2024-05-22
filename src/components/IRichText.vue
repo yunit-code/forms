@@ -112,7 +112,8 @@
 </template>
 
 <script>
-
+//引入富文本
+import VueTinymce from "@/plugins/tinymce"
 export default {
   name: "IRichText",
   data() {
@@ -124,6 +125,9 @@ export default {
       //回显的值，并且有值的时候也只是为了阻止表单联动的时候覆盖thisValue，有回显值第一次不覆盖thisValue，后面继续覆盖
       echoValue:null
     };
+  },
+  components: {
+    VueTinymce: VueTinymce
   },
   props: {},
   created() {

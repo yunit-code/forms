@@ -3,8 +3,12 @@
   "version": "2.2.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "npm run serve:dynamic",
+    "serve:static": "cross-env FILE_MODE=static  vue-cli-service serve",
+    "serve:dynamic": "cross-env FILE_MODE=dynamic  vue-cli-service serve",
+    "build": "npm run build:dynamic",
+    "build:static": "cross-env FILE_MODE=static vue-cli-service build",
+    "build:dynamic": "cross-env FILE_MODE=dynamic vue-cli-service build",
     "lint": "vue-cli-service lint",
     "gen": "idm-generate vue"
   },
@@ -25,6 +29,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.32.8",

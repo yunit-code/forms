@@ -1,11 +1,13 @@
 import config from '../../public/static/config.json';
 import Vue from 'vue'
+import Main from '../Main.vue'
 //闭包方法
 (() => {
     //这里把classId+@+version作为入口方法名（组件的包名）
     var defining = {
     };
     config && config.module.forEach(item => {
+
         defining[item.classId + "@" + config.version] = function (moduleObject) {
             // console.log("加载的组件：", moduleObject, item)
             //把组件定义的属性返回给核心框架
@@ -19,7 +21,7 @@ import Vue from 'vue'
                 moduleObject.innerComName = item.innerComName;
             }
             var vm = new Vue({
-                render: h => h(window[`${process.env.CodeVar}`]),
+                render: h => h(Main),
                 data() {
                     return {
                         //这里使用本身自己定义的组件名称，从系统维护（moduleObject）取来的怕不准去

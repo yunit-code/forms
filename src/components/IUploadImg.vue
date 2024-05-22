@@ -154,6 +154,12 @@ function iuploadimgGetBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+
+import 'ant-design-vue/lib/upload/style/css';
+import {
+  Upload
+} from 'ant-design-vue';
+
 export default {
   name: "IUploadImg",
   data() {
@@ -162,10 +168,15 @@ export default {
       thisValue: [
       ],
       moduleObject: {},
-      propData: this.$root.propData.compositeAttr || {},
+      propData: this.$root.propData.compositeAttr || {
+        maxUploadLength: 2
+      },
       previewVisible: false,
       previewImage: '',
     };
+  },
+  components: {
+    [Upload.name]: Upload
   },
   props: {},
   created() {

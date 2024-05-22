@@ -110,6 +110,9 @@
 </template>
 
 <script>
+import {
+  InputNumber
+} from 'ant-design-vue';
 export default {
   name: "INumber",
   data() {
@@ -121,6 +124,9 @@ export default {
       //回显的值，并且有值的时候也只是为了阻止表单联动的时候覆盖thisValue，有回显值第一次不覆盖thisValue，后面继续覆盖
       echoValue:null
     };
+  },
+  components: {
+    [InputNumber.name]: InputNumber
   },
   props: {},
   created() {

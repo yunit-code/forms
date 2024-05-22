@@ -1,7 +1,7 @@
 import Vue from 'vue';
 //富文本编辑器
 import tinymce from 'tinymce'
-import VueTinymce from '@packy-tang/vue-tinymce'
+import VueTinymce from '@packy-tang/vue-tinymce/src/vue-tinymce.vue'
 //样式
 import 'tinymce/skins/content/default/content.min.css'
 import 'tinymce/skins/ui/oxide/skin.min.css'
@@ -28,4 +28,6 @@ import 'tinymce/icons/default/icons'
 import './tinymce/langs/zh_CN.js'
 
 Vue.prototype.$tinymce = tinymce
-Vue.use(VueTinymce)
+// Vue.use(VueTinymce)
+
+export default VueTinymce

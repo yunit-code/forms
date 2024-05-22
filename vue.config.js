@@ -6,6 +6,12 @@ const isDev = process.env.NODE_ENV === 'development'
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
+
+const fileMode = process.env.FILE_MODE || 'dynamic'
+const entryFileMap = {
+  dynamic: 'src/main.js',
+  static: 'src/mainStatic.js'
+}
 let assetsDir = "./static";
 let getAssetsDir = function(filename) {
   return path.posix.join(assetsDir, filename);
@@ -40,6 +46,23 @@ let getGUID = function(len, radix) {
 
   return uuid.join("");
 }
+const splitChunks = {
+  chunks: 'async',
+  minSize: 2000000,
+  minChunks: 1,
+  maxAsyncRequests: 30,
+  maxInitialRequests: 30,
+  enforceSizeThreshold: 50000,
+  cacheGroups: {
+    vendors: {
+      name: 'chunk-vendors',
+      test: /[\\/]node_modules[\\/]/,
+      enforce: true,
+      reuseExistingChunk: true,
+      priority: 0
+    }
+  },
+}
 const externals = {
   vue: 'Vue',
   'vue-router': 'VueRouter',
@@ -54,7 +77,7 @@ module.exports = {
     pages:{
       index: {
         // page 的入口
-        entry: 'src/main.js',
+        entry: entryFileMap[fileMode],
         // 模板来源
         template: 'public/index.html',
         // 在 dist/index.html 的输出
@@ -117,10 +140,11 @@ module.exports = {
       //   .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
     },
     configureWebpack: {
+      optimization: fileMode == 'dynamic' ?  undefined : { splitChunks },
       plugins: [
-        new webpack.optimize.LimitChunkCountPlugin({
-          maxChunks: 1
-        }),
+        // new webpack.optimize.LimitChunkCountPlugin({
+        //   maxChunks: 1
+        // }),
         // new MiniCssExtractPlugin({
         //   // 修改打包后css文件名
         //   filename: `${assetsDir}/css/[name].css`,
@@ -131,7 +155,7 @@ module.exports = {
       output: {
         // 输出重构  打包编译后的 文件名称
         filename: `${assetsDir}/js/[name].js`,
-        // chunkFilename: `${assetsDir}/js/[name].js`,
+        chunkFilename: `${assetsDir}/js/[name].js`,
         jsonpFunction:JSON.stringify("webpackJsonp_"+getGUID()+"_"+new Date().getTime())
       },
       // resolve:{
@@ -146,7 +170,7 @@ module.exports = {
         // 是否使用css分离插件 ExtractTextPlugin
         extract: isDev ? false : {
           filename: `${assetsDir}/css/[name].css`,
-          // chunkFilename: `${assetsDir}/css/[name].css`
+          chunkFilename: `${assetsDir}/css/[name].css`
         },
         // 开启 CSS source maps?
         sourceMap: isDev,

@@ -221,6 +221,16 @@
 </template>
 
 <script>
+
+import 'ant-design-vue/lib/table/style/css';
+import 'ant-design-vue/lib/switch/style/css';
+import 'ant-design-vue/lib/switch/style/css';
+import 'ant-design-vue/lib/popconfirm/style/css';
+import {
+  Table,
+  Switch,
+  Popconfirm
+} from 'ant-design-vue';
 export default {
   name: "IChildrenTable",
   data() {
@@ -266,6 +276,11 @@ export default {
     };
   },
   props: {},
+  components: {
+    [Table.name]: Table,
+    [Switch.name]: Switch,
+    [Popconfirm.name]: Popconfirm,
+  },
   created() {
     this.moduleObject = this.$root.moduleObject;
     this.setAllColumns();

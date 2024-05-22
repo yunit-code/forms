@@ -192,6 +192,11 @@
 </template>
 
 <script>
+
+import 'ant-design-vue/lib/alert/style/css';
+import {
+  Alert
+} from 'ant-design-vue';
 export default {
   name: "IIconselect",
   data() {
@@ -203,6 +208,9 @@ export default {
       iconJsonInfo: { glyphs: [] },
       showClickMsg: false,
     };
+  },
+  components: {
+    [Alert.name]: Alert
   },
   props: {},
   created() {
