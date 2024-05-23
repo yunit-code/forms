@@ -649,6 +649,9 @@ export default {
         }
         if(_thisValue){
           this.thisValue = _thisValue;
+          IDM.type(this.thisValue)=="array"&&this.thisValue.forEach(item=>{
+            item.url = IDM.url.getWebPath(item.ourl);
+          })
         }
         //取出控件的状态，给propData.defaultStatus赋值,如果为readonly时需要重新readonlyValueSet();
         var stateFiledExp,newState;

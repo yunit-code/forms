@@ -70,9 +70,9 @@ export default {
     return {
       errorMessage:"",
       //非只读情况下的值，下拉框是value，所以跟只读的不一样，这里可能会被回显值覆盖一次，如果回显有值了就不会取optionList的默认值了
-      thisValue:this.$root.propData.selectMode=='default'?undefined:[],
-      moduleObject:{},
-      propData:this.$root.propData.compositeAttr||{},
+      thisValue:(this._propData?.compositeAttr||this.$root?.propData?.compositeAttr).selectMode=='default'?undefined:[],
+      moduleObject: this._moduleObject||{},
+      propData: this._propData?.compositeAttr||this.$root?.propData?.compositeAttr || {},
       optionList:[],
       //只读情况下显示的内容
       readonlyValue:"",
@@ -83,14 +83,18 @@ export default {
     }
   },
   props: {
+    _moduleObject: Object,
+    _propData: Object
   },
   created() {
-    this.moduleObject = this.$root.moduleObject
+    this.moduleObject = this._moduleObject||this.$root.moduleObject;
     // console.log(this.moduleObject)
     // this.propData = testAttr;
     this.convertAttrToStyleObject();
   },
   mounted() {
+    //直接使用组件此处的回调必须的
+    this._moduleObject&&IDM.callBackComponentMountComplete?.apply(this,[this._moduleObject]);
   },
   destroyed() {},
   methods:{
@@ -488,7 +492,7 @@ export default {
           //获取所有的URL参数、页面ID（pageId）、以及所有组件的返回值（用范围值去调用IDM提供的方法取出所有的组件值）
           let urlObject = window.IDM.url.queryObject(),
           pageId = window.IDM.broadcast&&window.IDM.broadcast.pageModule?window.IDM.broadcast.pageModule.id:"";
-          this.propData.optionInterfaceUrl&&window.IDM.http.get(this.propData.optionInterfaceUrl, {
+          this.propData.optionInterfaceUrl&&window.IDM.http.get(IDM.getExpressData(this.propData.optionInterfaceUrl,{pageId,...urlObject},false,false), {
             urlData:JSON.stringify(urlObject),
             pageId
           }).then((res) => {
@@ -909,7 +913,7 @@ export default {
             }
           }
         }
-        if(_thisValue){
+        if(_thisValue||_thisValue===0){
           this.echoValue = _thisValue;
           this.thisValue = _thisValue;
           this.change(this.thisValue)
