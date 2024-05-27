@@ -28,6 +28,7 @@
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
+    "@idm-modules/cli": "1.1.2",
     "@idm-modules/cli-generate": "^1.0.36",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
