@@ -33,9 +33,9 @@ import Main from '../Main.vue'
                 },
                 mounted() {
                     //加载完成回调
-                    this.$nextTick(function () {
-                        moduleObject.mountComplete && moduleObject.mountComplete(moduleObject);
-                    })
+                    // this.$nextTick(function () {
+                    //     moduleObject.mountComplete && moduleObject.mountComplete(moduleObject);
+                    // })
                 }
             }).$mount("#idm_" + moduleObject.id+(moduleObject.routerId?moduleObject.routerId:""));
             // console.log("加载的VM对象：", vm)
