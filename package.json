@@ -6,11 +6,15 @@
     "serve": "npm run serve:dynamic",
     "serve:static": "cross-env FILE_MODE=static  vue-cli-service serve",
     "serve:dynamic": "cross-env FILE_MODE=dynamic  vue-cli-service serve",
-    "build": "npm run build:dynamic",
+    "build": "npm run build:all",
     "build:static": "cross-env FILE_MODE=static vue-cli-service build",
     "build:dynamic": "cross-env FILE_MODE=dynamic vue-cli-service build",
+    "build:static:no-clean": "cross-env FILE_MODE=static vue-cli-service build --no-clean",
+    "build:dynamic:no-clean": "cross-env FILE_MODE=dynamic vue-cli-service build --no-clean",
+    "build:all": "npm run clean && npm run build:dynamic:no-clean && npm run build:static:no-clean && npm run zip",
     "lint": "vue-cli-service lint",
-    "gen": "idm-generate vue"
+    "zip": "idm zip",
+    "clean": "node ./webpack/clean.js"
   },
   "dependencies": {
     "@packy-tang/vue-tinymce": "^1.1.2",
@@ -30,6 +34,7 @@
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
+    "chalk": "^4.1.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.32.8",

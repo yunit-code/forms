@@ -1,5 +1,6 @@
 
 const path = require('path')
+const chalk = require('chalk')
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === 'development'
@@ -12,6 +13,13 @@ const entryFileMap = {
   dynamic: 'src/main.js',
   static: 'src/mainStatic.js'
 }
+let indexName = 'index';
+if(fileMode== 'static') {
+  indexName = 'index2'
+}
+console.log(`${chalk.blue('Current file mode')}   ------ >  ${chalk.yellow(fileMode)}`)
+console.log(`${chalk.blue('Current file index')}  ------ >  ${chalk.yellow(indexName)}`)
+console.log(`${chalk.green('Start building .....')}`)
 let assetsDir = "./static";
 let getAssetsDir = function(filename) {
   return path.posix.join(assetsDir, filename);
@@ -55,7 +63,7 @@ const splitChunks = {
   enforceSizeThreshold: 50000,
   cacheGroups: {
     vendors: {
-      name: 'chunk-vendors',
+      name: 'chunk-vendors2',
       test: /[\\/]node_modules[\\/]/,
       enforce: true,
       reuseExistingChunk: true,
@@ -75,7 +83,7 @@ module.exports = {
     assetsDir:assetsDir,
     productionSourceMap: false,
     pages:{
-      index: {
+      [indexName]: {
         // page 的入口
         entry: entryFileMap[fileMode],
         // 模板来源
@@ -142,14 +150,6 @@ module.exports = {
     configureWebpack: {
       optimization: fileMode == 'dynamic' ?  undefined : { splitChunks },
       plugins: [
-        // new webpack.optimize.LimitChunkCountPlugin({
-        //   maxChunks: 1
-        // }),
-        // new MiniCssExtractPlugin({
-        //   // 修改打包后css文件名
-        //   filename: `${assetsDir}/css/[name].css`,
-        //   chunkFilename: `${assetsDir}/css/[name].css`
-        // }),
         new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/)
       ],
       output: {
