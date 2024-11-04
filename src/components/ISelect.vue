@@ -36,7 +36,7 @@
            :allowClear="propData.clearIcon" 
            :placeholder="propData.placeholder">
             <template v-if="optionList.length>0">
-              <a-select-option v-for="(item) in optionList" :key="item.value">
+              <a-select-option v-for="(item) in optionList" :key="item.value" :title="item.text">
                 {{item.text}}
               </a-select-option>
             </template>
