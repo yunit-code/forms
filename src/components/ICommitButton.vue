@@ -492,6 +492,30 @@ export default {
           });
         })
         callback&&callback(true);
+      }else if(this.propData.commitType=="sendMessage"){
+        let moduleIdArray = [];
+        this.propData.sendMessagePageModule.forEach((item) => {
+          moduleIdArray.push(item.moduleId);
+        });
+        let msgData = moduleDataArray;
+        if(this.propData.sendMessageCustomFunction?.length){
+          let result = IDM.invokeCustomFunctions.apply(this, [
+              this.propData.sendMessageCustomFunction,
+              {
+                  moduleDataArray
+              },
+          ]);
+          msgData = result && result.length > 0 ? result[0] : msgData;
+        }
+
+        moduleIdArray.length&&this.sendBroadcastMessage({
+          type: this.propData.sendMessageType,
+          message: moduleDataArray,
+          rangeModule: moduleIdArray,
+          messageKey: this.propData.sendMessageKey || this.propData.ctrlId,
+        });
+        that.okLoading = false;
+        callback&&callback(true);
       }else{
         that.okLoading = false;
         callback&&callback(true);

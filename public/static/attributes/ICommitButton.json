@@ -969,6 +969,10 @@
                         {
                             "label": "自定义函数",
                             "value": "customFun"
+                        },
+                        {
+                            "label": "发送联动消息",
+                            "value": "sendMessage"
                         }
                     ],
                     "default": "metadata",
@@ -1027,6 +1031,7 @@
                     "layoutType": "block",
                     "text": "提交后自定义函数",
                     "bindKey": "commitRunLaterFunction",
+                    "display": "@[commitType!='sendMessage']",
                     "desc": "提交执行逻辑后会调用设置的自定义函数，接收参数格式为上面执行提交的返回结果{...自定义的，...返回结果的值}",
                     "multiple": false
                 },
@@ -1037,6 +1042,45 @@
                     "bindKey": "formGroupKey",
                     "desc": "表单分组标识，用于批量提交分组标识相同的表单控件值，减少一个一个选择控件的范围，注意：提交范围与分组标识是交集关系，都能起到作用",
                     "default": "formGroupKey"
+                },
+                {
+                    "type": "group",
+                    "text": "联动其他组件消息参数",
+                    "bindKey": "sendMessageParam",
+                    "display": "@[commitType=='sendMessage']",
+                    "children": [
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "组件范围",
+                            "desc": "选择要把数据发送到哪些组件的范围",
+                            "bindKey": "sendMessagePageModule",
+                            "multiple": true
+                        },
+                        {
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "消息类型",
+                            "bindKey": "sendMessageType",
+                            "desc": "消息类型，用于判断接收联动消息的类型，linkageDemand：代表需求值，linkageResult：代表结果值",
+                            "default": "linkageDemand"
+                        },
+                        {
+                            "type": "input",
+                            "layoutType": "inline",
+                            "text": "消息标识",
+                            "bindKey": "sendMessageKey",
+                            "default": ""
+                        },
+                        {
+                            "type": "actionSelect",
+                            "layoutType": "block",
+                            "text": "发送前数据自定义函数",
+                            "bindKey": "sendMessageCustomFunction",
+                            "desc": "发送消息前需要处理数据的自定义函数，返回值为处理后的数据，会把此函数返回的结果给到接收联动消息的组件，接收参数{moduleDataArray}",
+                            "multiple": false
+                        }
+                    ]
                 },
                 {
                     "type": "table",
