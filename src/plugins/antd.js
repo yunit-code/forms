@@ -29,7 +29,8 @@ import {
   Popover,
   Modal,
   TreeSelect,
-  Tree
+  Tree,
+  DatePicker 
 } from 'ant-design-vue';
 
 /* v1.1.3+ registration methods */
@@ -46,5 +47,6 @@ Vue.use(Popover);
 Vue.use(Modal);
 Vue.use(TreeSelect);
 Vue.use(Tree);
+Vue.use(DatePicker);
 Vue.prototype.$confirm = Modal.confirm;
 Vue.prototype.TreeSelect = TreeSelect;
