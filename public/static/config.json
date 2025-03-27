@@ -108,6 +108,13 @@
       "className": "IUeditor",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.forms.IDateRangePicker",
+      "comName": "日期范围选择",
+      "className": "IDateRangePicker",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }

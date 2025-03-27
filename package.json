@@ -18,10 +18,12 @@
     "gen": "idm-generate vue"
   },
   "dependencies": {
+    "@ant-design/icons": "2.1.1",
     "@packy-tang/vue-tinymce": "^1.1.2",
     "@tinymce/tinymce-vue": "^4.0.3",
     "ant-design-vue": "^1.7.6",
     "core-js": "^3.6.5",
+    "moment": "^2.21.0",
     "sass-loader": "^8.0.2",
     "tinymce": "^5.8.1",
     "vue": "^2.6.11",
@@ -35,8 +37,8 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
-    "cross-env": "^7.0.3",
     "chalk": "^4.1.2",
+    "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.32.8",
