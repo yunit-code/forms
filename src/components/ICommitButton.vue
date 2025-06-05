@@ -488,7 +488,8 @@ export default {
             moduleData:moduleDataArray,
             customParam:item.param,
             _this:this,
-            callback:this.commitRunLaterHandle
+            callback:this.commitRunLaterHandle,
+            linkageDemandPageModule:this.propData.linkageDemandPageModule
           });
         })
         callback&&callback(true);

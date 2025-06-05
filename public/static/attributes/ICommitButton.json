@@ -1011,9 +1011,18 @@
                     "layoutType": "block",
                     "text": "自定义函数",
                     "bindKey": "commitFunction",
-                    "desc": "提交的时候会调用设置的自定义函数，接收参数格式为{...自定义的,commitData:{pageId:'',formData:[]}}",
+                    "desc": "提交的时候会调用设置的自定义函数，接收参数格式为{...自定义的,commitData:{pageId:'',moduleData:[],linkageDemandPageModule:[}}",
                     "display": "@[commitType=='customFun']",
                     "multiple": true
+                },
+                {
+                  "type": "pageModuleSelect",
+                  "layoutType": "block",
+                  "text": "需求组件范围",
+                  "desc": "当前选项变更需要联动其他组件需求值（比如下拉选项数据等）的组件范围",
+                  "bindKey": "linkageDemandPageModule",
+                  "display":"@[commitType=='customFun']",
+                  "multiple": true
                 },
                 {
                     "type": "pageModuleSelect",
