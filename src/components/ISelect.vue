@@ -743,15 +743,15 @@ export default {
     change(value, option){
       this.verifySelectValue('change')
       let selectObject=this.getSelectedOption(value);
-      if(selectObject==null){
-        return;
-      }
+      // if(selectObject==null){
+      //   return;
+      // }
       if(this.propData.linkageDemandPageModule&&this.propData.linkageDemandPageModule.length>0){
         var moduleIdArray = [];
         this.propData.linkageDemandPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
         this.sendBroadcastMessage({
           type:"linkageDemand",
-          message:selectObject,
+          message:selectObject||'',
           rangeModule:moduleIdArray,
           messageKey:this.propData.formFiledKey||this.propData.ctrlId,
           triggerType:option===true?'AT':(option?'MT':'OT')
@@ -762,7 +762,7 @@ export default {
         this.propData.linkageResultPageModule.forEach(item=>{moduleIdArray.push(item.moduleId)});
         this.sendBroadcastMessage({
           type:"linkageResult",
-          message:selectObject,
+          message:selectObject||'',
           rangeModule:moduleIdArray,
           messageKey:this.propData.formFiledKey||this.propData.ctrlId,
           triggerType:option===true?'AT':(option?'MT':'OT')
