@@ -34,7 +34,10 @@
            v-model="thisValue" 
            :size="propData.size" 
            :allowClear="propData.clearIcon" 
-           :placeholder="propData.placeholder">
+           :placeholder="propData.placeholder"
+           :filterOption="filterOption"
+           :showSearch="propData.showSearch"
+          >
             <template v-if="optionList.length>0">
               <a-select-option v-for="(item) in optionList" :key="item.value" :title="item.text">
                 {{item.text}}
@@ -98,6 +101,13 @@ export default {
   },
   destroyed() {},
   methods:{
+    filterOption(inputValue, option) {
+      const results = IDM.invokeCustomFunctions.apply(this, [this.propData.filterOptionFunction, {
+        inputValue,
+        option
+      }])
+      return results?.[0];
+    },
     /**
      * 把属性转换成错误消息的文字样式
      */

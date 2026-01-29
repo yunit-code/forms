@@ -306,6 +306,14 @@
                     "bindKey": "retainBottomHeight",
                     "display":"@[!closeCheck]",
                     "default": true
+                },
+                {
+                    "type": "switch",
+                    "layoutType": "inline",
+                    "text": "是否搜索",
+                    "desc":"使单选模式可搜索",
+                    "bindKey": "showSearch",
+                    "default": false
                 }
             ]
         },
@@ -1432,6 +1440,14 @@
                     "text": "值发生变化时的动作",
                     "bindKey": "changeOptionFunction",
                     "desc": "当选中的值发生变化时会调用此处设置的方法",
+                    "multiple": false
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "根据输入项筛选时的动作",
+                    "bindKey": "filterOptionFunction",
+                    "desc": "是否根据输入项进行筛选。当其为一个函数时，会接收 inputValue option 两个参数，当 option 符合筛选条件时，应返回 true，反之则返回 false。",
                     "multiple": false
                 }
             ]
