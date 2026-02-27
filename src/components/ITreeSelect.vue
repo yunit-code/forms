@@ -1131,7 +1131,7 @@ export default {
         sitemValue=sitemValue.value;
       }
       data.forEach(item=>{
-        if(item[ this.propData.replaceFields_children ? this.propData.replaceFields_value : 'value' ]==sitemValue){
+        if(item[ this.propData.replaceFields_value ? this.propData.replaceFields_value : 'value' ]==sitemValue){
           newValue.push(item);
         }
         if ( item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ] && item[ this.propData.replaceFields_children ? this.propData.replaceFields_children : 'children' ].length ) {

@@ -1,0 +1,143 @@
+{
+    "classId": "idm.componet.forms.IDateRangePicker",
+    "comName": "日期范围选择",
+    "className": "IDateRangePicker",
+    "comType": "common",
+    "comLangue": "vue",
+    "compositeAttr": [
+        {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "唯一标识",
+            "bindKey": "ctrlId",
+            "disabled": true,
+            "default": "@[packageid]",
+            "desc": "",
+            "helpUrl": ""
+        },
+        {
+            "type": "group",
+            "text": "基本属性",
+            "desc": "提供设置组件能达到展示效果的基本属性设置信息",
+            "children": [
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "日期格式",
+                    "bindKey": "format",
+                    "default": "Y-M-D"
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "text": "结果联动",
+            "desc": "点击？查看结果联动设置用法指南",
+            "children": [
+                {
+                    "type": "radio",
+                    "layoutType": "inline",
+                    "text": "联动响应",
+                    "bindKey": "resType",
+                    "desc": "选择接收其他组件传值后要执行的后续动作，也就是选择接收到的值的作用是什么，处理完后返回控件所需要的结果",
+                    "dictionary": [
+                        {
+                            "label": "无",
+                            "value": "none"
+                        },
+                        {
+                            "label": "作为接口参数",
+                            "value": "interfaceParam"
+                        },
+                        {
+                            "label": "直接使用结果",
+                            "value": "resultVal"
+                        },
+                        {
+                            "label": "自定义函数",
+                            "value": "customFun"
+                        }
+                    ],
+                    "default": "none",
+                    "styleType": "radio"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "响应条件",
+                    "bindKey": "resCondition",
+                    "display": "@[resType!='none']"
+                },
+                {
+                    "type": "input",
+                    "layoutType": "inline",
+                    "text": "参数名称",
+                    "bindKey": "resInterfaceParam",
+                    "default": "",
+                    "display": "@[resType=='interfaceParam']"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "接口地址",
+                    "bindKey": "resInterfaceUrl",
+                    "default": "",
+                    "display": "@[resType=='interfaceParam']"
+                },
+                {
+                    "type": "textarea",
+                    "layoutType": "inline",
+                    "text": "显示结果",
+                    "bindKey": "resResultValField",
+                    "desc": "根据接传值的数据格式指定结果集的字段，比如传的值为{data:张三}，则这里应该填写data，如果不填写则直接显示整个结果",
+                    "default": "",
+                    "display": "@[resType=='resultVal']"
+                },
+                {
+                    "type": "actionSelect",
+                    "layoutType": "block",
+                    "text": "自定义函数",
+                    "bindKey": "resFunction",
+                    "desc": "其他组件传值后会把值传递到此方法并且调用，函数返回数据格式为：字符或数字（单选模式）、数组形式（多选或标签模式）",
+                    "display": "@[resType=='customFun']",
+                    "multiple": false
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "text": "高级",
+            "desc": "点击？查看高级设置用法指南",
+            "children": [
+                {
+                    "type": "group",
+                    "text": "数据变动联动组件",
+                    "desc": "当数据有变动会联动这里选择的组件，把当前结果的对象传递给这些组件",
+                    "children": [
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "需求组件范围",
+                            "desc": "当前数据变动需要联动其他组件需求值（比如下拉框选项接口参数等）的组件范围",
+                            "bindKey": "linkageDemandPageModule",
+                            "multiple": true
+                        },
+                        {
+                            "type": "pageModuleSelect",
+                            "layoutType": "block",
+                            "text": "结果组件范围",
+                            "desc": "当前数据变动需要联动其他组件变更结果值的组件范围",
+                            "bindKey": "linkageResultPageModule",
+                            "multiple": true
+                        }
+                    ]
+                },
+                {
+                    "type": "actionSelect",
+                    "text": "默认值",
+                    "bindKey": "defaultValueFuncs"
+                }
+            ]
+        }
+    ]
+}
